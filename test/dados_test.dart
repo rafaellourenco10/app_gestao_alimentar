@@ -156,4 +156,32 @@ void main() {
     expect(d.despensa.single.quantidade, '4 un');
     expect(d.cozinhados.single.aproveitados, 2);
   });
+
+  test('validade: dias para vencer e lista dos que estão vencendo', () async {
+    d.agora = () => DateTime(2026, 10, 1, 20);
+    await d.adicionarItem(
+      d.alimento(489),
+      '6 un',
+      validade: DateTime(2026, 10, 20),
+    );
+    await d.adicionarItem(
+      d.alimento(157),
+      '2 un',
+      validade: DateTime(2026, 10, 2),
+    );
+    await d.adicionarItem(
+      d.alimento(182),
+      null,
+      validade: DateTime(2026, 9, 30),
+    );
+    await d.adicionarItem(d.alimento(4), '1 pacote');
+    expect(d.diasParaVencer(d.despensa[1]), 1);
+    expect(d.diasParaVencer(d.despensa[2]), -1);
+    expect(d.diasParaVencer(d.despensa[3]), isNull);
+    expect(d.vencendo.map((i) => i.alimento.id), [182, 157]);
+    // cozinhar mantém a validade de quem sobrou
+    final r = (await d.gerarCardapio()).first;
+    await d.registrarCozinhado(r, {489: '4 un'});
+    expect(d.despensa.first.validade, DateTime(2026, 10, 20));
+  });
 }

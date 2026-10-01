@@ -17,14 +17,16 @@ class _DespensaTelaState extends State<DespensaTela> {
   FocusNode? _foco;
   String? _filtro; // null = Todos
 
-  Future<void> _pedirQuantidade(Alimento a, {String? atual}) async {
-    final quantidade = await showDialog<String>(
+  Future<void> _editar(Alimento a, {ItemDespensa? item}) async {
+    final resposta = await showDialog<(String, DateTime?)>(
       context: context,
-      builder: (_) => _QuantidadeDialog(a, atual: atual),
+      builder: (_) => _QuantidadeDialog(a, item: item),
     );
     _busca?.clear();
     _foco?.unfocus();
-    if (quantidade != null) await dados.adicionarItem(a, quantidade);
+    if (resposta == null) return;
+    final (quantidade, validade) = resposta;
+    await dados.adicionarItem(a, quantidade, validade: validade);
   }
 
   Future<void> _remover(ItemDespensa item) async {
@@ -37,8 +39,11 @@ class _DespensaTelaState extends State<DespensaTela> {
           content: Text('${item.alimento.nomeCurto} removido'),
           action: SnackBarAction(
             label: 'Desfazer',
-            onPressed: () =>
-                dados.adicionarItem(item.alimento, item.quantidade),
+            onPressed: () => dados.adicionarItem(
+              item.alimento,
+              item.quantidade,
+              validade: item.validade,
+            ),
           ),
         ),
       );
@@ -117,6 +122,54 @@ class _DespensaTelaState extends State<DespensaTela> {
   Widget _resumo(int n) {
     final textos = Theme.of(context).textTheme;
     final restantes = dados.geracoesRestantes;
+    final vencendo = dados.vencendo;
+    if (vencendo.isNotEmpty) {
+      final nomes = vencendo
+          .take(3)
+          .map((i) => i.alimento.nomeCurto)
+          .join(', ');
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Cores.laranjaFixo.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: Sombras.leve,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Cores.laranja,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.schedule, size: 22, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    vencendo.length == 1
+                        ? 'Use primeiro: 1 alimento vencendo'
+                        : 'Use primeiro: ${vencendo.length} alimentos vencendo',
+                    style: textos.labelMedium,
+                  ),
+                  Text(
+                    vencendo.length > 3 ? '$nomes…' : nomes,
+                    style: textos.bodySmall?.copyWith(
+                      color: Cores.noLaranjaFixo,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Container(
       padding: const EdgeInsets.all(16),
       clipBehavior: Clip.antiAlias,
@@ -178,7 +231,7 @@ class _DespensaTelaState extends State<DespensaTela> {
       displayStringForOption: (a) => a.nomeCurto,
       optionsBuilder: (v) =>
           v.text.trim().isEmpty ? dados.sugestoes : dados.buscar(v.text),
-      onSelected: (a) => _pedirQuantidade(a),
+      onSelected: (a) => _editar(a),
       fieldViewBuilder: (context, controller, foco, onSubmitted) {
         _busca = controller;
         _foco = foco;
@@ -389,8 +442,7 @@ class _DespensaTelaState extends State<DespensaTela> {
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () =>
-              _pedirQuantidade(item.alimento, atual: item.quantidade ?? ''),
+          onTap: () => _editar(item.alimento, item: item),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
             child: Row(
@@ -422,6 +474,14 @@ class _DespensaTelaState extends State<DespensaTela> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (avisoValidade(dados.diasParaVencer(item)) case (
+                  final texto,
+                  final cor,
+                  final fundo,
+                )) ...[
+                  const SizedBox(width: 6),
+                  Pilula(texto, icone: Icons.schedule, cor: cor, fundo: fundo),
+                ],
                 const SizedBox(width: 6),
                 SizedBox(
                   width: 28,
@@ -518,17 +578,33 @@ class _DespensaTelaState extends State<DespensaTela> {
 }
 
 class _QuantidadeDialog extends StatefulWidget {
-  const _QuantidadeDialog(this.alimento, {this.atual});
+  const _QuantidadeDialog(this.alimento, {this.item});
 
   final Alimento alimento;
-  final String? atual;
+  final ItemDespensa? item;
 
   @override
   State<_QuantidadeDialog> createState() => _QuantidadeDialogState();
 }
 
 class _QuantidadeDialogState extends State<_QuantidadeDialog> {
-  late final _ctrl = TextEditingController(text: widget.atual);
+  late final _ctrl = TextEditingController(text: widget.item?.quantidade);
+  late DateTime? _validade = widget.item?.validade;
+
+  Future<void> _escolherData() async {
+    final hoje = DateUtils.dateOnly(dados.agora());
+    final data = await showDatePicker(
+      context: context,
+      initialDate: _validade ?? hoje.add(const Duration(days: 7)),
+      firstDate: hoje.subtract(const Duration(days: 30)),
+      lastDate: hoje.add(const Duration(days: 730)),
+      helpText: 'Validade',
+    );
+    if (data != null) setState(() => _validade = data);
+  }
+
+  void _salvar([String? texto]) =>
+      Navigator.pop(context, (texto ?? _ctrl.text, _validade));
   static const _atalhos = [
     '1 un',
     '2 un',
@@ -549,7 +625,7 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
   Widget build(BuildContext context) {
     final textos = Theme.of(context).textTheme;
     final a = widget.alimento;
-    final novo = widget.atual == null && !dados.temNaDespensa(a.id);
+    final novo = widget.item == null && !dados.temNaDespensa(a.id);
     return AlertDialog(
       title: Row(
         children: [
@@ -581,7 +657,7 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
               hintText: 'ex: 3 un, 500 g',
               prefixIcon: Icon(Icons.scale_outlined, size: 20),
             ),
-            onSubmitted: (v) => Navigator.pop(context, v),
+            onSubmitted: _salvar,
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -599,6 +675,51 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
                 ),
             ],
           ),
+          const SizedBox(height: 16),
+          Material(
+            color: Cores.superficieBaixa,
+            borderRadius: BorderRadius.circular(8),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: _escolherData,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.event_outlined,
+                      size: 20,
+                      color: Cores.contorno,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _validade == null
+                            ? 'Validade (opcional)'
+                            : 'Vence em ${formatarData(_validade!)}',
+                        style: textos.bodyMedium?.copyWith(
+                          color: _validade == null
+                              ? Cores.contorno
+                              : Cores.texto,
+                        ),
+                      ),
+                    ),
+                    if (_validade != null)
+                      IconButton(
+                        tooltip: 'Remover validade',
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () => setState(() => _validade = null),
+                      )
+                    else
+                      const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.chevron_right, size: 18),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       actions: [
@@ -611,7 +732,7 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
             minimumSize: const Size(0, 44),
             shape: const StadiumBorder(),
           ),
-          onPressed: () => Navigator.pop(context, _ctrl.text),
+          onPressed: _salvar,
           child: Text(novo ? 'Adicionar' : 'Salvar'),
         ),
       ],

@@ -767,3 +767,15 @@ class ChipFiltro extends StatelessWidget {
     );
   }
 }
+
+/// Texto e cores do aviso de validade; null quando ainda falta bastante.
+(String, Color, Color)? avisoValidade(int? dias) {
+  if (dias == null || dias > diasDeAlerta) return null;
+  if (dias < 0) return ('Vencido', Cores.erro, Cores.erroClaro);
+  if (dias == 0) return ('Vence hoje', Cores.erro, Cores.erroClaro);
+  if (dias == 1) return ('Vence amanhã', Cores.laranjaTexto, Cores.laranjaFixo);
+  return ('Vence em $dias dias', Cores.laranjaTexto, Cores.laranjaFixo);
+}
+
+String formatarData(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';

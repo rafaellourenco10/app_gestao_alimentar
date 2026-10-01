@@ -73,10 +73,16 @@ class Alimento {
 }
 
 class ItemDespensa {
-  const ItemDespensa(this.alimento, this.quantidade);
+  const ItemDespensa(this.alimento, this.quantidade, {this.validade});
   final Alimento alimento;
   final String? quantidade;
+
+  /// Data de validade (opcional).
+  final DateTime? validade;
 }
+
+/// Itens com até 3 dias para vencer (ou já vencidos) ganham destaque.
+const diasDeAlerta = 3;
 
 class Ingrediente {
   const Ingrediente(this.alimento, this.gramas, this.medida);
@@ -216,13 +222,36 @@ class Dados extends ChangeNotifier {
   bool temNaDespensa(int alimentoId) =>
       despensa.any((i) => i.alimento.id == alimentoId);
 
-  Future<void> adicionarItem(Alimento alimento, String? quantidade) async {
+  Future<void> adicionarItem(
+    Alimento alimento,
+    String? quantidade, {
+    DateTime? validade,
+  }) async {
     final q = quantidade?.trim();
     despensa
       ..removeWhere((i) => i.alimento.id == alimento.id)
-      ..add(ItemDespensa(alimento, q == null || q.isEmpty ? null : q));
+      ..add(
+        ItemDespensa(
+          alimento,
+          q == null || q.isEmpty ? null : q,
+          validade: validade,
+        ),
+      );
     notifyListeners();
   }
+
+  /// Dias até vencer (negativo = vencido); null sem validade.
+  int? diasParaVencer(ItemDespensa item) => item.validade == null
+      ? null
+      : DateUtils.dateOnly(
+          item.validade!,
+        ).difference(DateUtils.dateOnly(agora())).inDays;
+
+  /// Itens vencidos ou perto de vencer, do mais urgente para o menos.
+  /// Fase 3: mandar ao Gemini para priorizar esses alimentos nas receitas.
+  List<ItemDespensa> get vencendo =>
+      despensa.where((i) => (diasParaVencer(i) ?? 99) <= diasDeAlerta).toList()
+        ..sort((a, b) => diasParaVencer(a)!.compareTo(diasParaVencer(b)!));
 
   Future<void> removerItem(int alimentoId) async {
     despensa.removeWhere((i) => i.alimento.id == alimentoId);
@@ -275,6 +304,7 @@ class Dados extends ChangeNotifier {
         despensa[i] = ItemDespensa(
           despensa[i].alimento,
           limpa.isEmpty ? null : limpa,
+          validade: despensa[i].validade,
         );
       }
     }

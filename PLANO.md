@@ -75,6 +75,7 @@ create table despensa (
   user_id uuid not null references auth.users default auth.uid(),
   alimento_id int not null references alimentos,
   quantidade text,               -- opcional: "3 un", "500 g"
+  validade date,                 -- opcional
   created_at timestamptz default now(),
   unique (user_id, alimento_id)
 );
@@ -97,9 +98,9 @@ create table receitas (
 ## Fluxo da geração (Fase 3, Edge Function `gerar-cardapio`)
 
 1. O app chama a função (o token JWT do usuário vai junto automaticamente).
-2. A função lê a despensa do usuário: `id` da TACO, nome e quantidade.
+2. A função lê a despensa do usuário: `id` da TACO, nome, quantidade e validade.
 3. Ela verifica o limite diário e, se passou de 5, retorna o erro 429.
-4. Envia ao Gemini a lista `[{id, nome, quantidade}]` com a regra: **use só esses ids e mais os básicos (sal, óleo, água); não passe da quantidade disponível; informe a quantidade em gramas.**
+4. Envia ao Gemini a lista `[{id, nome, quantidade}]` com a regra: **use só esses ids e mais os básicos (sal, óleo, água); não passe da quantidade disponível; priorize os que vencem antes; informe a quantidade em gramas.**
    - Usar `responseMimeType: application/json` + `responseSchema` para garantir um JSON válido.
 5. **A função calcula as calorias e os macros** com `alimentos` (gramas × valor por 100 g ÷ 100). O valor da IA nunca é usado.
 6. Salva as receitas em `receitas` e devolve ao app.
@@ -149,7 +150,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Ajustar porções (recalcula quantidades)
 - [x] Modo cozinhar: passo a passo em tela cheia, tela sempre acesa, timer por etapa
 - [x] "Cozinhei!": desconta da despensa o que foi usado
-- [ ] Validade dos alimentos (aviso de vencimento)
+- [x] Validade dos alimentos (aviso de vencimento)
 - [ ] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
 - [ ] Adicionar alimentos por voz
 - [ ] Boas-vindas na primeira abertura
