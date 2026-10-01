@@ -506,6 +506,8 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
     final a = widget.alimento;
     final novo = widget.item == null && !dados.temNaDespensa(a.id);
     return AlertDialog(
+      // Rola quando o teclado deixa pouco espaço.
+      scrollable: true,
       title: Row(
         children: [
           Text(emojiDe(a), style: const TextStyle(fontSize: 28)),
