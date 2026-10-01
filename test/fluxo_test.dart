@@ -110,8 +110,19 @@ void main() {
       await tester.tap(find.byTooltip('Passo anterior'));
       await tester.pumpAndSettle();
       expect(find.text('Passo 3 de 4'), findsOneWidget);
-      await tester.tap(find.byTooltip('Sair do modo cozinhar'));
+      await tester.tap(find.text('Próximo passo'));
       await tester.pumpAndSettle();
+
+      // Terminei! → painel Cozinhei: 6 ovos − 2 = 4.
+      await tester.tap(find.text('Terminei!'));
+      await tester.pumpAndSettle();
+      expect(find.text('Cozinhou? Que delícia! 🎉'), findsOneWidget);
+      expect(find.text('4 un'), findsOneWidget);
+      foraDasBarras(tester, find.text('Atualizar despensa'));
+      await tester.tap(find.text('Atualizar despensa'));
+      await tester.pumpAndSettle();
+      expect(dados.despensa.single.quantidade, '4 un');
+      expect(dados.cozinhados.length, 1);
       expect(find.text('Tabela nutricional'), findsOneWidget);
       await mostrar(tester, 'Salvar nos favoritos', ReceitaTela);
       await tester.pumpAndSettle();

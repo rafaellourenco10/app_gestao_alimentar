@@ -148,7 +148,7 @@ Cada fase termina com algo funcionando que dá para testar.
 ### Fase 1.5: Melhorias de experiência (pedido do usuário, antes do Supabase)
 - [x] Ajustar porções (recalcula quantidades)
 - [x] Modo cozinhar: passo a passo em tela cheia, tela sempre acesa, timer por etapa
-- [ ] "Cozinhei!": desconta da despensa o que foi usado
+- [x] "Cozinhei!": desconta da despensa o que foi usado
 - [ ] Validade dos alimentos (aviso de vencimento)
 - [ ] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
 - [ ] Adicionar alimentos por voz

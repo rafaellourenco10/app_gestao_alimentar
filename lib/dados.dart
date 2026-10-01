@@ -127,6 +127,16 @@ class Receita {
       porcoes;
 }
 
+/// Uma vez em que o usuário cozinhou uma receita.
+class Cozinhado {
+  const Cozinhado(this.receita, this.quando, this.aproveitados);
+  final Receita receita;
+  final DateTime quando;
+
+  /// Quantos alimentos da despensa foram usados.
+  final int aproveitados;
+}
+
 class DespensaVazia implements Exception {}
 
 class LimiteAtingido implements Exception {}
@@ -139,6 +149,7 @@ class Dados extends ChangeNotifier {
   /// Histórico de receitas geradas, mais novas primeiro.
   final List<Receita> receitas = [];
   final List<DateTime> _geracoes = [];
+  final List<Cozinhado> cozinhados = [];
   String? email;
 
   /// Substituíveis nos testes.
@@ -250,6 +261,25 @@ class Dados extends ChangeNotifier {
     receitas.insertAll(0, novas);
     notifyListeners();
     return novas;
+  }
+
+  /// Aplica as novas quantidades (null = acabou, sai da despensa) e registra a receita feita.
+  Future<void> registrarCozinhado(Receita r, Map<int, String?> novas) async {
+    for (final MapEntry(key: id, value: qtd) in novas.entries) {
+      final i = despensa.indexWhere((x) => x.alimento.id == id);
+      if (i < 0) continue;
+      if (qtd == null) {
+        despensa.removeAt(i);
+      } else {
+        final limpa = qtd.trim();
+        despensa[i] = ItemDespensa(
+          despensa[i].alimento,
+          limpa.isEmpty ? null : limpa,
+        );
+      }
+    }
+    cozinhados.add(Cozinhado(r, agora(), novas.length));
+    notifyListeners();
   }
 
   Future<void> alternarFavorita(Receita r) async {
@@ -411,4 +441,51 @@ int? minutosNoPasso(String passo) {
     caseSensitive: false,
   ).firstMatch(passo);
   return m == null ? null : int.parse(m.group(1)!);
+}
+
+/// Quantidade que sobra na despensa depois de cozinhar.
+/// `acabou` = não sobrou nada; `nova == atual` quando não dá para calcular
+/// (quantidade vazia ou em formato desconhecido — o usuário confirma na tela).
+({String? nova, bool acabou}) quantidadeDepois(
+  String? atual,
+  Ingrediente i,
+  double fator,
+) {
+  final sem = (nova: atual, acabou: false);
+  if (atual == null) return sem;
+  final m = RegExp(
+    r'^\s*(\d+(?:[.,]\d+)?)\s*([½¼¾⅓⅔])?\s*(.*)$',
+  ).firstMatch(atual);
+  if (m == null) return sem;
+  final unidade = m.group(3)!.trim().toLowerCase();
+  var tem =
+      double.parse(m.group(1)!.replaceAll(',', '.')) +
+      (m.group(2) == null ? 0 : _fracoes[m.group(2)]!);
+
+  double usado;
+  var unidadeFinal = unidade;
+  switch (unidade) {
+    case 'g' || 'gr' || 'gramas' || 'ml':
+      usado = i.gramas * fator;
+    case 'kg' || 'l' || 'litro' || 'litros':
+      usado = i.gramas * fator / 1000;
+    default:
+      // Contáveis ("un", "dentes", "fatias"...): usa o número da medida caseira.
+      final n = RegExp(
+        r'^(\d+(?:[.,]\d+)?)?\s*([½¼¾⅓⅔])?',
+      ).firstMatch(escalarMedida(i.medida, fator))!;
+      if (n.group(1) == null && n.group(2) == null) return sem;
+      usado =
+          (n.group(1) == null
+              ? 0
+              : double.parse(n.group(1)!.replaceAll(',', '.'))) +
+          (n.group(2) == null ? 0 : _fracoes[n.group(2)]!);
+      if (unidade == 'dúzia' || unidade == 'duzia' || unidade == 'dúzias') {
+        tem *= 12;
+        unidadeFinal = 'un';
+      }
+  }
+  final resto = tem - usado;
+  if (resto <= 0.001) return (nova: null, acabou: true);
+  return (nova: '${formatarNumero(resto)} $unidadeFinal'.trim(), acabou: false);
 }

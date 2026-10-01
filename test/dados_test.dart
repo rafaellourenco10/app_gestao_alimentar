@@ -109,4 +109,51 @@ void main() {
     expect(minutosNoPasso('Asse por 40 min.'), 40);
     expect(minutosNoPasso('Sirva quente.'), isNull);
   });
+
+  test('cozinhei: quanto sobra na despensa', () {
+    final ovo2 = Ingrediente(d.alimento(489), 100, '2 ovos');
+    final frango = Ingrediente(
+      d.alimento(409),
+      200,
+      '1 filé de peito de frango',
+    );
+    final sal = Ingrediente(d.alimento(517), 1, 'Sal a gosto');
+    expect(quantidadeDepois('6 un', ovo2, 1), (nova: '4 un', acabou: false));
+    expect(quantidadeDepois('6 un', ovo2, 2), (nova: '2 un', acabou: false));
+    expect(quantidadeDepois('2 un', ovo2, 1), (nova: null, acabou: true));
+    expect(quantidadeDepois('1 dúzia', ovo2, 1), (
+      nova: '10 un',
+      acabou: false,
+    ));
+    expect(quantidadeDepois('500 g', frango, 1), (
+      nova: '300 g',
+      acabou: false,
+    ));
+    expect(quantidadeDepois('1 kg', frango, 1), (
+      nova: '0,8 kg',
+      acabou: false,
+    ));
+    expect(quantidadeDepois('1,5 kg', frango, 1), (
+      nova: '1,3 kg',
+      acabou: false,
+    ));
+    expect(quantidadeDepois(null, ovo2, 1), (nova: null, acabou: false));
+    expect(quantidadeDepois('1 pacote', sal, 1), (
+      nova: '1 pacote',
+      acabou: false,
+    ));
+    expect(quantidadeDepois('um pouco', ovo2, 1), (
+      nova: 'um pouco',
+      acabou: false,
+    ));
+  });
+
+  test('registrar cozinhado atualiza e remove itens da despensa', () async {
+    await d.adicionarItem(d.alimento(489), '6 un');
+    await d.adicionarItem(d.alimento(157), '1 un');
+    final r = (await d.gerarCardapio()).first;
+    await d.registrarCozinhado(r, {489: '4 un', 157: null});
+    expect(d.despensa.single.quantidade, '4 un');
+    expect(d.cozinhados.single.aproveitados, 2);
+  });
 }
