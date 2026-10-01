@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dados.dart';
 import 'tema.dart';
@@ -10,6 +11,8 @@ import 'telas/perfil_tela.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Só retrato: deitado, os botões do Android vão para a lateral e cobririam o conteúdo.
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dados.carregarAlimentos();
   runApp(const NutriCasaApp());
 }

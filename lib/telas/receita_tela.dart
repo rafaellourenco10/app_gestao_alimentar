@@ -29,7 +29,7 @@ class ReceitaTela extends StatelessWidget {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 32 + MediaQuery.paddingOf(context).bottom),
               sliver: SliverList.list(children: [
                 Text(rotulo.toUpperCase(),
                     style: textos.labelMedium?.copyWith(

@@ -16,7 +16,7 @@ class CardapioTela extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Cardápio')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+        padding: EdgeInsets.fromLTRB(20, 8, 20, 32 + MediaQuery.paddingOf(context).bottom),
         children: [
           Cabecalho(sobrescrito: 'Sugestões inteligentes', titulo: 'Seu cardápio'),
           const SizedBox(height: 4),

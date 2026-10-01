@@ -33,7 +33,13 @@ const _tipos = {
 
 /// Pílula pequena (kcal, tempo, dificuldade).
 class Selo extends StatelessWidget {
-  const Selo(this.texto, {super.key, this.icone, this.fundo = Colors.white, this.cor = Cores.texto});
+  const Selo(
+    this.texto, {
+    super.key,
+    this.icone,
+    this.fundo = Colors.white,
+    this.cor = Cores.texto,
+  });
 
   final String texto;
   final IconData? icone;
@@ -44,24 +50,35 @@ class Selo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: fundo, borderRadius: BorderRadius.circular(99)),
+      decoration: BoxDecoration(
+        color: fundo,
+        borderRadius: BorderRadius.circular(99),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icone != null) ...[Icon(icone, size: 14, color: cor), const SizedBox(width: 4)],
-          Text(texto,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
-                  ?.copyWith(color: cor, fontWeight: FontWeight.w700)),
+          if (icone != null) ...[
+            Icon(icone, size: 14, color: cor),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            texto,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: cor,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-Selo seloKcal(double kcal) =>
-    Selo('${kcal.round()} kcal', fundo: Cores.laranjaClaro, cor: Cores.laranjaTexto);
+Selo seloKcal(double kcal) => Selo(
+  '${kcal.round()} kcal',
+  fundo: Cores.laranjaClaro,
+  cor: Cores.laranjaTexto,
+);
 
 class ReceitaCard extends StatelessWidget {
   const ReceitaCard(this.receita, {super.key});
@@ -81,8 +98,9 @@ class ReceitaCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => Navigator.of(context)
-            .push(MaterialPageRoute<void>(builder: (_) => ReceitaTela(receita))),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => ReceitaTela(receita))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -92,20 +110,32 @@ class ReceitaCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Stack(
                 children: [
-                  Center(child: Text(emoji, style: const TextStyle(fontSize: 52))),
+                  Center(
+                    child: Text(emoji, style: const TextStyle(fontSize: 52)),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(right: 52),
-                    child: Wrap(spacing: 6, runSpacing: 6, children: [
-                      seloKcal(receita.kcal),
-                      Selo('${receita.tempoMin} min', icone: Icons.schedule),
-                      Selo(receita.dificuldade, icone: Icons.thumb_up_alt_outlined),
-                    ]),
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        seloKcal(receita.kcal),
+                        Selo('${receita.tempoMin} min', icone: Icons.schedule),
+                        Selo(
+                          receita.dificuldade,
+                          icone: Icons.thumb_up_alt_outlined,
+                        ),
+                      ],
+                    ),
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Selo(rotulo, fundo: Cores.verde, cor: Colors.white),
                   ),
-                  Align(alignment: Alignment.topRight, child: BotaoFavorito(receita)),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: BotaoFavorito(receita),
+                  ),
                 ],
               ),
             ),
@@ -114,24 +144,40 @@ class ReceitaCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(receita.titulo,
-                      style: textos.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 6),
-                  Text(nomes,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textos.bodySmall?.copyWith(color: Cores.textoSuave)),
-                  const SizedBox(height: 10),
-                  Row(children: [
-                    Flexible(
-                      child: Text('Ver receita completa',
-                          overflow: TextOverflow.ellipsis,
-                          style: textos.labelLarge
-                              ?.copyWith(color: Cores.verdeEscuro, fontWeight: FontWeight.w700)),
+                  Text(
+                    receita.titulo,
+                    style: textos.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.arrow_forward, size: 18, color: Cores.verdeEscuro),
-                  ]),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    nomes,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'Ver receita completa',
+                          overflow: TextOverflow.ellipsis,
+                          style: textos.labelLarge?.copyWith(
+                            color: Cores.verdeEscuro,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.arrow_forward,
+                        size: 18,
+                        color: Cores.verdeEscuro,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -155,8 +201,10 @@ class BotaoFavorito extends StatelessWidget {
         style: IconButton.styleFrom(backgroundColor: Colors.white),
         tooltip: receita.favorita ? 'Remover dos favoritos' : 'Favoritar',
         onPressed: () => dados.alternarFavorita(receita),
-        icon: Icon(receita.favorita ? Icons.favorite : Icons.favorite_border,
-            color: Cores.erro),
+        icon: Icon(
+          receita.favorita ? Icons.favorite : Icons.favorite_border,
+          color: Cores.erro,
+        ),
       ),
     );
   }
@@ -190,13 +238,17 @@ class Aviso extends StatelessWidget {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 56)),
             const SizedBox(height: 16),
-            Text(titulo,
-                textAlign: TextAlign.center,
-                style: textos.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              titulo,
+              textAlign: TextAlign.center,
+              style: textos.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 8),
-            Text(texto,
-                textAlign: TextAlign.center,
-                style: textos.bodyMedium?.copyWith(color: Cores.textoSuave)),
+            Text(
+              texto,
+              textAlign: TextAlign.center,
+              style: textos.bodyMedium?.copyWith(color: Cores.textoSuave),
+            ),
             if (acao != null) ...[
               const SizedBox(height: 24),
               FilledButton(onPressed: onAcao, child: Text(acao!)),
@@ -210,7 +262,12 @@ class Aviso extends StatelessWidget {
 
 /// Título de tela no estilo do Stitch ("VISÃO GERAL / Minha despensa").
 class Cabecalho extends StatelessWidget {
-  const Cabecalho({super.key, required this.sobrescrito, required this.titulo, this.direita});
+  const Cabecalho({
+    super.key,
+    required this.sobrescrito,
+    required this.titulo,
+    this.direita,
+  });
 
   final String sobrescrito;
   final String titulo;
@@ -226,12 +283,21 @@ class Cabecalho extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(sobrescrito.toUpperCase(),
-                  style: textos.labelMedium?.copyWith(
-                      color: Cores.verde, fontWeight: FontWeight.w700, letterSpacing: 1)),
+              Text(
+                sobrescrito.toUpperCase(),
+                style: textos.labelMedium?.copyWith(
+                  color: Cores.verde,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1,
+                ),
+              ),
               const SizedBox(height: 2),
-              Text(titulo,
-                  style: textos.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+              Text(
+                titulo,
+                style: textos.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
           ),
         ),

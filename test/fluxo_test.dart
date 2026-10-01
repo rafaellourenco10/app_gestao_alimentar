@@ -6,7 +6,6 @@ import 'package:nutricasa/main.dart';
 import 'package:nutricasa/telas/cardapio_tela.dart';
 import 'package:nutricasa/telas/perfil_tela.dart';
 import 'package:nutricasa/telas/receita_tela.dart';
-import 'package:nutricasa/widgets.dart';
 
 void main() {
   testWidgets('fluxo completo num celular pequeno: login → despensa → cardápio → receita',
@@ -14,7 +13,9 @@ void main() {
     GoogleFonts.config.allowRuntimeFetching = false;
     tester.view
       ..physicalSize = const Size(360, 740)
-      ..devicePixelRatio = 1;
+      ..devicePixelRatio = 1
+      // Barra de status em cima e os botões voltar/home/recentes do Android embaixo.
+      ..padding = const FakeViewPadding(top: barraStatus, bottom: botoesAndroid);
     addTearDown(tester.view.reset);
 
     await tester.runAsync(dados.carregarAlimentos);
@@ -22,6 +23,8 @@ void main() {
     await tester.pumpWidget(const NutriCasaApp());
 
     // Login: valida e-mail e entra.
+    foraDasBarras(tester, find.text('NutriCasa'));
+    foraDasBarras(tester, find.text('Entrar no NutriCasa'));
     await tester.tap(find.text('Entrar no NutriCasa'));
     await tester.pump();
     expect(find.text('Digite um e-mail válido'), findsOneWidget);
@@ -43,19 +46,26 @@ void main() {
     expect(find.text('1 alimento'), findsOneWidget);
     expect(find.text('Ovos'), findsNothing); // cabeçalho do grupo leva emoji
     expect(find.textContaining('Ovos'), findsOneWidget);
+    foraDasBarras(tester, find.text('Minha despensa'));
+    foraDasBarras(tester, find.text('Gerar cardápio'));
+    foraDasBarras(tester, find.text('Perfil'));
 
     // Gerar cardápio.
     await tester.tap(find.text('Gerar cardápio'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 5));
     expect(find.text('Criando receitas com seus ingredientes…'), findsOneWidget);
+    foraDasBarras(tester, find.text('Chef IA em ação'));
+    foraDasBarras(tester, find.byType(LinearProgressIndicator));
     await tester.pump(const Duration(milliseconds: 50));
     await tester.pumpAndSettle();
     expect(find.text('Seu cardápio'), findsOneWidget);
-    expect(
-        find.descendant(
-            of: find.byType(CardapioTela), matching: find.byType(ReceitaCard, skipOffstage: false)),
-        findsNWidgets(3));
+    expect(find.text('Omelete de tomate com queijo minas'), findsOneWidget);
+    await rolarAteOFim(tester, CardapioTela);
+    expect(find.text('Panqueca rápida de banana e aveia'), findsOneWidget);
+    foraDasBarras(tester, find.textContaining('Gerar outras opções'));
+    await tester.drag(rolagem(CardapioTela), const Offset(0, 10000));
+    await tester.pumpAndSettle();
 
     // Abrir receita, favoritar e avaliar.
     await tester.tap(find.text('Omelete de tomate com queijo minas'));
@@ -68,6 +78,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(dados.receitas.first.favorita, isTrue);
     expect(dados.receitas.first.feedback, 1);
+    await rolarAteOFim(tester, ReceitaTela);
+    foraDasBarras(tester, find.textContaining('Valores nutricionais estimados'));
 
     // Voltar e conferir as outras abas.
     await tester.pageBack();
@@ -85,18 +97,37 @@ void main() {
     expect(find.text('1 / $limiteDiario usados'), findsOneWidget);
 
     // Sair volta para o login.
-    await mostrar(tester, 'Sair da conta', PerfilTela);
-    await tester.pumpAndSettle();
+    await rolarAteOFim(tester, PerfilTela);
+    foraDasBarras(tester, find.text('Sair da conta'));
     await tester.tap(find.text('Sair da conta'));
     await tester.pumpAndSettle();
     expect(find.text('Entrar no NutriCasa'), findsOneWidget);
   });
 }
 
+const alturaTela = 740.0;
+const barraStatus = 24.0;
+const botoesAndroid = 48.0;
+
+/// Falha se o widget ficar atrás da barra de status ou dos botões do Android.
+void foraDasBarras(WidgetTester tester, Finder alvo) {
+  final r = tester.getRect(alvo.first);
+  expect(r.top, greaterThanOrEqualTo(barraStatus), reason: '$alvo atrás da barra de status');
+  expect(r.bottom, lessThanOrEqualTo(alturaTela - botoesAndroid),
+      reason: '$alvo atrás dos botões do Android');
+}
+
+Finder rolagem(Type tela) =>
+    find.descendant(of: find.byType(tela), matching: find.byType(Scrollable)).first;
+
+Future<void> rolarAteOFim(WidgetTester tester, Type tela) async {
+  await tester.drag(rolagem(tela), const Offset(0, -10000));
+  await tester.pumpAndSettle();
+}
+
 /// Rola a tela até o texto ser construído e depois o traz para a área visível.
 Future<void> mostrar(WidgetTester tester, String texto, Type tela) async {
   final alvo = find.text(texto);
-  await tester.scrollUntilVisible(alvo, 200,
-      scrollable: find.descendant(of: find.byType(tela), matching: find.byType(Scrollable)).first);
+  await tester.scrollUntilVisible(alvo, 200, scrollable: rolagem(tela));
   await tester.ensureVisible(alvo);
 }
