@@ -13,6 +13,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.runAsync(dados.carregarAlimentos);
+    dados.boasVindasVistas = true;
     dados
       ..agora = (() => DateTime(2026, 10, 1, 9))
       ..despensa.clear();

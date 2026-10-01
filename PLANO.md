@@ -153,7 +153,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Validade dos alimentos (aviso de vencimento)
 - [x] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
 - [x] Adicionar alimentos por voz
-- [ ] Boas-vindas na primeira abertura
+- [x] Boas-vindas na primeira abertura
 - [ ] Compartilhar receita como imagem
 - [ ] Modo escuro
 - [ ] Resumo da semana (dados reais)

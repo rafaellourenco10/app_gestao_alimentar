@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dados.dart';
 import 'tema.dart';
+import 'telas/boas_vindas_tela.dart';
 import 'telas/compras_tela.dart';
 import 'telas/despensa_tela.dart';
 import 'telas/favoritos_tela.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   // Só retrato: deitado, os botões do Android vão para a lateral e cobririam o conteúdo.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dados.carregarAlimentos();
+  await dados.carregarPreferencias();
   runApp(const NutriCasaApp());
 }
 
@@ -34,8 +36,11 @@ class NutriCasaApp extends StatelessWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: ListenableBuilder(
         listenable: dados,
-        builder: (context, _) =>
-            dados.email == null ? const LoginTela() : const Inicio(),
+        builder: (context, _) => !dados.boasVindasVistas
+            ? const BoasVindasTela()
+            : dados.email == null
+            ? const LoginTela()
+            : const Inicio(),
       ),
     );
   }

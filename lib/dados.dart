@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Único ponto de acesso a dados do app (ver PLANO.md).
 /// Fase 1: tudo em memória. Fases 2–3: os corpos dos métodos passam a chamar
@@ -166,6 +167,10 @@ class Dados extends ChangeNotifier {
   final List<ItemCompra> compras = [];
   String? email;
 
+  // Preferências guardadas no celular.
+  SharedPreferences? _prefs;
+  bool boasVindasVistas = false;
+
   /// Substituíveis nos testes.
   DateTime Function() agora = DateTime.now;
   Duration atrasoFalso = const Duration(seconds: 2);
@@ -212,6 +217,19 @@ class Dados extends ChangeNotifier {
     for (final id in sugestoesRapidas)
       if (!temNaDespensa(id)) alimento(id),
   ].take(5).toList();
+
+  // ---------- Preferências ----------
+
+  Future<void> carregarPreferencias() async {
+    _prefs = await SharedPreferences.getInstance();
+    boasVindasVistas = _prefs!.getBool('boasVindas') ?? false;
+  }
+
+  Future<void> concluirBoasVindas() async {
+    boasVindasVistas = true;
+    notifyListeners();
+    await _prefs?.setBool('boasVindas', true);
+  }
 
   // ---------- Conta (Fase 2: Supabase Auth) ----------
 

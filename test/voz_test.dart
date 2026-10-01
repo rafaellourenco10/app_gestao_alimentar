@@ -7,6 +7,7 @@ void main() {
   testWidgets('microfone indisponível mostra aviso sem travar', (tester) async {
     GoogleFonts.config.allowRuntimeFetching = false;
     await tester.runAsync(dados.carregarAlimentos);
+    dados.boasVindasVistas = true;
     await dados.entrar('ana@exemplo.com', '123456');
     await tester.pumpWidget(const NutriCasaApp());
     await tester.pumpAndSettle();

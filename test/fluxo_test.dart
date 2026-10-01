@@ -25,6 +25,7 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.runAsync(dados.carregarAlimentos);
+      dados.boasVindasVistas = true;
       dados.atrasoFalso = const Duration(milliseconds: 10);
       await tester.pumpWidget(const NutriCasaApp());
 
@@ -168,6 +169,7 @@ void testarTimer() {
   ) async {
     GoogleFonts.config.allowRuntimeFetching = false;
     await tester.runAsync(dados.carregarAlimentos);
+    dados.boasVindasVistas = true;
     final receita = Receita(
       id: 't',
       titulo: 'Panqueca',
