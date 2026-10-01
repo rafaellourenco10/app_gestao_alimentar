@@ -50,35 +50,48 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
       fieldViewBuilder: (context, controller, foco, onSubmitted) {
         _texto = controller;
         _foco = foco;
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: Sombras.leve,
+        // Com as sugestões abertas, o "voltar" do celular só fecha as sugestões.
+        return ListenableBuilder(
+          listenable: foco,
+          builder: (context, campo) => PopScope(
+            canPop: !foco.hasFocus,
+            onPopInvokedWithResult: (saiu, _) {
+              if (!saiu) foco.unfocus();
+            },
+            child: campo!,
           ),
-          child: TextField(
-            controller: controller,
-            focusNode: foco,
-            textInputAction: TextInputAction.search,
-            onSubmitted: (_) => onSubmitted(),
-            decoration: InputDecoration(
-              hintText: widget.dica,
-              prefixIcon: const Icon(Icons.search, size: 20),
-              suffixIcon: widget.aoFalar == null
-                  ? null
-                  : IconButton(
-                      tooltip: 'Ditar alimentos',
-                      icon: Icon(Icons.mic_none, color: Cores.verde),
-                      onPressed: widget.aoFalar,
-                    ),
-              fillColor: Cores.branco,
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Cores.verde, width: 1.5),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: Sombras.leve,
+            ),
+            child: TextField(
+              controller: controller,
+              focusNode: foco,
+              // Tocar fora fecha as sugestões (no Android o campo não perde o foco sozinho).
+              onTapOutside: (_) => foco.unfocus(),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => onSubmitted(),
+              decoration: InputDecoration(
+                hintText: widget.dica,
+                prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: widget.aoFalar == null
+                    ? null
+                    : IconButton(
+                        tooltip: 'Ditar alimentos',
+                        icon: Icon(Icons.mic_none, color: Cores.verde),
+                        onPressed: widget.aoFalar,
+                      ),
+                fillColor: Cores.branco,
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Cores.verde, width: 1.5),
+                ),
               ),
             ),
           ),
@@ -88,46 +101,49 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
         final sugestao = (_texto?.text.trim() ?? '').isEmpty;
         return Align(
           alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Material(
-              elevation: 12,
-              shadowColor: const Color(0x33000000),
-              color: Cores.branco,
-              borderRadius: BorderRadius.circular(16),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 320,
-                  maxWidth: MediaQuery.sizeOf(context).width - 40,
-                ),
-                child: ListView(
-                  padding: const EdgeInsets.all(8),
-                  shrinkWrap: true,
-                  children: [
-                    if (sugestao)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'SUGESTÕES RÁPIDAS',
-                                style: textos.labelSmall?.copyWith(
-                                  color: Cores.textoSuave,
+          // Faz parte do campo: tocar numa sugestão não conta como "tocar fora".
+          child: TextFieldTapRegion(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Material(
+                elevation: 12,
+                shadowColor: const Color(0x33000000),
+                color: Cores.branco,
+                borderRadius: BorderRadius.circular(16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 320,
+                    maxWidth: MediaQuery.sizeOf(context).width - 40,
+                  ),
+                  child: ListView(
+                    padding: const EdgeInsets.all(8),
+                    shrinkWrap: true,
+                    children: [
+                      if (sugestao)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'SUGESTÕES RÁPIDAS',
+                                  style: textos.labelSmall?.copyWith(
+                                    color: Cores.textoSuave,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.auto_awesome,
-                              size: 14,
-                              color: Cores.textoSuave,
-                            ),
-                          ],
+                              Icon(
+                                Icons.auto_awesome,
+                                size: 14,
+                                color: Cores.textoSuave,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    for (final a in opcoes)
-                      _opcao(textos, a, () => onSelected(a)),
-                  ],
+                      for (final a in opcoes)
+                        _opcao(textos, a, () => onSelected(a)),
+                    ],
+                  ),
                 ),
               ),
             ),
