@@ -164,7 +164,7 @@ class _BoasVindasTelaState extends State<BoasVindasTela> {
               child: Container(
                 width: i == 1 ? 104 : 76,
                 height: i == 1 ? 104 : 76,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Cores.branco,
                   shape: BoxShape.circle,
                   boxShadow: Sombras.card,

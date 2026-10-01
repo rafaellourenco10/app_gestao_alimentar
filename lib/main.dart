@@ -95,7 +95,7 @@ class _InicioState extends State<Inicio> {
         ],
       ),
       bottomNavigationBar: DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Cores.branco,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           boxShadow: Sombras.nav,

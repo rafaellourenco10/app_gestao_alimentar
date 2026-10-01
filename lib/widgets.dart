@@ -23,14 +23,13 @@ const emojiCategoria = {
 };
 
 /// Cor do pontinho ao lado do nome da categoria (como no Stitch).
-const corCategoria = {
-  'Frutas': Cores.laranja,
-  'Verduras e legumes': Cores.primaria,
-  'Carnes': Cores.terra,
-  'Peixes e frutos do mar': Cores.terra,
-  'Ovos': Cores.terra,
-  'Cereais e pães': Color(0xFFFFB77B),
-  'Leite e derivados': Cores.contorno,
+Color corCategoria(String categoria) => switch (categoria) {
+  'Frutas' => Cores.laranja,
+  'Verduras e legumes' => Cores.primaria,
+  'Carnes' || 'Peixes e frutos do mar' || 'Ovos' => Cores.terra,
+  'Cereais e pães' => const Color(0xFFFFB77B),
+  'Leite e derivados' => Cores.contorno,
+  _ => Cores.superficieAlta,
 };
 
 String emojiDe(Alimento a) => a.emoji ?? emojiCategoria[a.categoria] ?? '🍽️';
@@ -41,9 +40,13 @@ const _tipos = {
   'lanche': ('Lanche', [Color(0xFFFFE6DC), Color(0xFFFFC6B0)]),
 };
 
-(String, List<Color>) tipoReceita(String tipo) =>
-    _tipos[tipo] ??
-    ('Receita', const [Cores.superficieBaixa, Cores.superficie]);
+/// Rótulo e degradê do tipo de refeição (escurecido no modo escuro).
+(String, List<Color>) tipoReceita(String tipo) {
+  final (rotulo, cores) =
+      _tipos[tipo] ?? ('Receita', [Cores.superficieBaixa, Cores.superficie]);
+  if (!Cores.escuro) return (rotulo, cores);
+  return (rotulo, [for (final c in cores) Color.lerp(c, Cores.fundo, 0.72)!]);
+}
 
 /// Pílula pequena (kcal, tempo, contadores).
 class Pilula extends StatelessWidget {
@@ -51,25 +54,28 @@ class Pilula extends StatelessWidget {
     this.texto, {
     super.key,
     this.icone,
-    this.fundo = Cores.branco,
-    this.cor = Cores.texto,
+    this.fundo,
+    this.cor,
     this.corIcone,
     this.sombra = false,
   });
 
   final String texto;
   final IconData? icone;
-  final Color fundo;
-  final Color cor;
+
+  /// Padrões: [Cores.branco] e [Cores.texto] da paleta ativa.
+  final Color? fundo;
+  final Color? cor;
   final Color? corIcone;
   final bool sombra;
 
   @override
   Widget build(BuildContext context) {
+    final cor = this.cor ?? Cores.texto;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: fundo,
+        color: fundo ?? Cores.branco,
         borderRadius: BorderRadius.circular(99),
         boxShadow: sombra ? Sombras.leve : null,
       ),
@@ -110,21 +116,23 @@ class Cartao extends StatelessWidget {
     this.padding = const EdgeInsets.all(20),
     this.raio = 12,
     this.sombra = Sombras.media,
-    this.cor = Cores.branco,
+    this.cor,
   });
 
   final Widget child;
   final EdgeInsets padding;
   final double raio;
   final List<BoxShadow> sombra;
-  final Color cor;
+
+  /// Padrão: [Cores.branco] da paleta ativa.
+  final Color? cor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: cor,
+        color: cor ?? Cores.branco,
         borderRadius: BorderRadius.circular(raio),
         boxShadow: sombra,
       ),
@@ -195,7 +203,7 @@ class Topo extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final textos = Theme.of(context).textTheme;
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Cores.fundo,
         boxShadow: [
           BoxShadow(
@@ -301,7 +309,7 @@ class Cabecalho extends StatelessWidget {
               Container(
                 width: 24,
                 height: 24,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Cores.verdeFixo,
                   shape: BoxShape.circle,
                 ),
@@ -570,7 +578,7 @@ class ReceitaCard extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.inventory_2_outlined,
                             size: 18,
                             color: Cores.primaria,
@@ -604,7 +612,7 @@ class ReceitaCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        const Icon(
+                        Icon(
                           Icons.arrow_forward,
                           size: 18,
                           color: Cores.primaria,
@@ -683,7 +691,7 @@ class Aviso extends StatelessWidget {
             Container(
               width: 88,
               height: 88,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Cores.superficieBaixa,
                 shape: BoxShape.circle,
               ),
@@ -716,14 +724,16 @@ class ChipFiltro extends StatelessWidget {
     required this.ativo,
     required this.onTap,
     this.contador,
-    this.fundo = Cores.branco,
+    this.fundo,
   });
 
   final String texto;
   final bool ativo;
   final VoidCallback onTap;
   final int? contador;
-  final Color fundo;
+
+  /// Padrão: [Cores.branco] da paleta ativa.
+  final Color? fundo;
 
   @override
   Widget build(BuildContext context) {
@@ -732,7 +742,7 @@ class ChipFiltro extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Material(
-        color: ativo ? Cores.verde : fundo,
+        color: ativo ? Cores.verde : fundo ?? Cores.branco,
         shape: const StadiumBorder(),
         elevation: ativo ? 1 : 0.5,
         shadowColor: const Color(0x22000000),

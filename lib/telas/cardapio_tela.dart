@@ -30,7 +30,7 @@ class CardapioTela extends StatelessWidget {
             titulo: 'Seu cardápio',
             subtitulo:
                 '${receitas.length} receitas criadas com o que você tem na despensa',
-            direita: const Pilula(
+            direita: Pilula(
               'Zero desperdício',
               icone: Icons.eco_outlined,
               fundo: Cores.laranjaFixo,
@@ -90,11 +90,7 @@ class CardapioTela extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.lightbulb_outline,
-                size: 16,
-                color: Cores.textoSuave,
-              ),
+              Icon(Icons.lightbulb_outline, size: 16, color: Cores.textoSuave),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(

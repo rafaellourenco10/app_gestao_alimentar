@@ -116,7 +116,7 @@ class _GerandoTelaState extends State<GerandoTela>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Pilula(
+          Pilula(
             'CHEF IA EM AÇÃO',
             icone: Icons.circle,
             fundo: Cores.verdeNav,
@@ -151,7 +151,7 @@ class _GerandoTelaState extends State<GerandoTela>
                         child: Container(
                           width: 56,
                           height: 56,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: Cores.branco,
                             shape: BoxShape.circle,
                             boxShadow: Sombras.card,
@@ -165,12 +165,12 @@ class _GerandoTelaState extends State<GerandoTela>
                       child: Container(
                         width: 104,
                         height: 104,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Cores.branco,
                           shape: BoxShape.circle,
                           boxShadow: Sombras.media,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.soup_kitchen_outlined,
                           size: 52,
                           color: Cores.verde,
@@ -197,7 +197,7 @@ class _GerandoTelaState extends State<GerandoTela>
           const SizedBox(height: 24),
           ClipRRect(
             borderRadius: BorderRadius.circular(99),
-            child: const LinearProgressIndicator(
+            child: LinearProgressIndicator(
               minHeight: 8,
               color: Cores.laranja,
               backgroundColor: Cores.superficie,
@@ -215,11 +215,11 @@ class _GerandoTelaState extends State<GerandoTela>
                 Container(
                   width: 40,
                   height: 40,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Cores.laranjaFixo,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.lightbulb_outline,
                     size: 22,
                     color: Cores.noLaranjaFixo,
@@ -242,7 +242,7 @@ class _GerandoTelaState extends State<GerandoTela>
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Pilula(
+                          Pilula(
                             'Zero desperdício',
                             fundo: Cores.verdeFixo,
                             cor: Cores.noVerdeFixo,

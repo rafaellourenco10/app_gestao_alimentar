@@ -67,7 +67,7 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
                   ? null
                   : IconButton(
                       tooltip: 'Ditar alimentos',
-                      icon: const Icon(Icons.mic_none, color: Cores.verde),
+                      icon: Icon(Icons.mic_none, color: Cores.verde),
                       onPressed: widget.aoFalar,
                     ),
               fillColor: Cores.branco,
@@ -78,7 +78,7 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Cores.verde, width: 1.5),
+                borderSide: BorderSide(color: Cores.verde, width: 1.5),
               ),
             ),
           ),
@@ -117,7 +117,7 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
                                 ),
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.auto_awesome,
                               size: 14,
                               color: Cores.textoSuave,
@@ -170,7 +170,7 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
                     fundo: Cores.superficie,
                     cor: Cores.textoSuave,
                   )
-                : const Pilula(
+                : Pilula(
                     'Adicionar',
                     icone: Icons.add,
                     fundo: Cores.verdeFixo,

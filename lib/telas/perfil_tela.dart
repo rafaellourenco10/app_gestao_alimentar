@@ -32,7 +32,7 @@ class PerfilTela extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: Sombras.card,
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [Cores.branco, Color(0xFFEFFBEA)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -102,7 +102,7 @@ class PerfilTela extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.bolt, color: Cores.verde),
+                      Icon(Icons.bolt, color: Cores.verde),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -135,7 +135,7 @@ class PerfilTela extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.schedule, size: 14, color: Cores.texto),
+                      Icon(Icons.schedule, size: 14, color: Cores.texto),
                       const SizedBox(width: 4),
                       Text('Renova à meia-noite', style: textos.labelMedium),
                     ],
@@ -281,13 +281,9 @@ class PerfilTela extends StatelessWidget {
               ),
             ),
             if (emBreve)
-              const Pilula(
-                'Em breve',
-                fundo: Cores.superficie,
-                cor: Cores.textoSuave,
-              )
+              Pilula('Em breve', fundo: Cores.superficie, cor: Cores.textoSuave)
             else
-              const Icon(Icons.chevron_right, color: Cores.textoSuave),
+              Icon(Icons.chevron_right, color: Cores.textoSuave),
           ],
         ),
       ),

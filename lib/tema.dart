@@ -3,39 +3,130 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Tokens do Stitch (stitch_strategic_plan_execution/*/code.html).
 /// Superfícies trocadas do azulado do Stitch para off-white quente (PLANO.md › Visual).
+class Paleta {
+  const Paleta({
+    required this.primaria,
+    required this.verde,
+    required this.verdeFixo,
+    required this.noVerdeFixo,
+    required this.verdeNav,
+    required this.laranja,
+    required this.noLaranja,
+    required this.laranjaTexto,
+    required this.laranjaFixo,
+    required this.noLaranjaFixo,
+    required this.terra,
+    required this.fundo,
+    required this.branco,
+    required this.superficieBaixa,
+    required this.superficie,
+    required this.superficieAlta,
+    required this.texto,
+    required this.textoSuave,
+    required this.contorno,
+    required this.erro,
+    required this.erroClaro,
+  });
+
+  final Color primaria;
+  final Color verde;
+  final Color verdeFixo;
+  final Color noVerdeFixo;
+  final Color verdeNav;
+  final Color laranja;
+  final Color noLaranja;
+  final Color laranjaTexto;
+  final Color laranjaFixo;
+  final Color noLaranjaFixo;
+  final Color terra;
+  final Color fundo;
+  final Color branco;
+  final Color superficieBaixa;
+  final Color superficie;
+  final Color superficieAlta;
+  final Color texto;
+  final Color textoSuave;
+  final Color contorno;
+  final Color erro;
+  final Color erroClaro;
+}
+
+const paletaClara = Paleta(
+  primaria: Color(0xFF0D631B), // textos de destaque, links
+  verde: Color(0xFF2E7D32), // primary-container: chips ativos, passos
+  verdeFixo: Color(0xFFA3F69C), // primary-fixed: selos verdes
+  noVerdeFixo: Color(0xFF002204),
+  verdeNav: Color(0xFFCBFFC2), // pílula da aba ativa
+  laranja: Color(0xFFFF8F06), // secondary-container: CTA, kcal
+  noLaranja: Color(0xFF623300),
+  laranjaTexto: Color(0xFF8F4E00), // secondary
+  laranjaFixo: Color(0xFFFFDCC2), // secondary-fixed
+  noLaranjaFixo: Color(0xFF2E1500),
+  terra: Color(0xFF6B4F45), // tertiary
+  fundo: Color(0xFFFAFAF7), // fundo das telas
+  branco: Color(0xFFFFFFFF), // surface-container-lowest: cards
+  superficieBaixa: Color(0xFFF2F2EC), // surface-container-low
+  superficie: Color(0xFFEBEBE4), // surface-container
+  superficieAlta: Color(0xFFE0E0D8), // surface-container-highest
+  texto: Color(0xFF111D23),
+  textoSuave: Color(0xFF40493D),
+  contorno: Color(0xFF707A6C),
+  erro: Color(0xFFBA1A1A),
+  erroClaro: Color(0xFFFFDAD6),
+);
+
+/// Modo escuro: mesmas funções de cor, tons derivados do Material 3 escuro.
+const paletaEscura = Paleta(
+  primaria: Color(0xFF88D982),
+  verde: Color(0xFF4CAF50),
+  verdeFixo: Color(0xFF1E4D24),
+  noVerdeFixo: Color(0xFFA3F69C),
+  verdeNav: Color(0xFF24452A),
+  laranja: Color(0xFFFF8F06),
+  noLaranja: Color(0xFF3A1E00),
+  laranjaTexto: Color(0xFFFFB77B),
+  laranjaFixo: Color(0xFF4A2C10),
+  noLaranjaFixo: Color(0xFFFFDCC2),
+  terra: Color(0xFFE4BEB2),
+  fundo: Color(0xFF121614),
+  branco: Color(0xFF1C211E),
+  superficieBaixa: Color(0xFF232925),
+  superficie: Color(0xFF2B322D),
+  superficieAlta: Color(0xFF3A423C),
+  texto: Color(0xFFE6EDE7),
+  textoSuave: Color(0xFFB7C2B8),
+  contorno: Color(0xFF8B958C),
+  erro: Color(0xFFFFB4AB),
+  erroClaro: Color(0xFF5C1A16),
+);
+
+/// Cores da paleta ativa. `MaterialApp.builder` troca a paleta conforme o tema.
 abstract final class Cores {
-  // Verdes
-  static const primaria = Color(0xFF0D631B); // textos de destaque, links
-  static const verde = Color(
-    0xFF2E7D32,
-  ); // primary-container: chips ativos, passos
-  static const verdeFixo = Color(0xFFA3F69C); // primary-fixed: selos verdes
-  static const noVerdeFixo = Color(0xFF002204);
-  static const verdeNav = Color(0xFFCBFFC2); // pílula da aba ativa
+  static Paleta _atual = paletaClara;
+  static bool get escuro => identical(_atual, paletaEscura);
+  static set escuro(bool valor) => _atual = valor ? paletaEscura : paletaClara;
 
-  // Laranjas
-  static const laranja = Color(0xFFFF8F06); // secondary-container: CTA, kcal
-  static const noLaranja = Color(0xFF623300);
-  static const laranjaTexto = Color(0xFF8F4E00); // secondary
-  static const laranjaFixo = Color(0xFFFFDCC2); // secondary-fixed
-  static const noLaranjaFixo = Color(0xFF2E1500);
-
-  static const terra = Color(0xFF6B4F45); // tertiary
-
-  // Superfícies (off-white quente)
-  static const fundo = Color(0xFFFAFAF7);
-  static const branco = Color(0xFFFFFFFF); // surface-container-lowest
-  static const superficieBaixa = Color(0xFFF2F2EC); // surface-container-low
-  static const superficie = Color(0xFFEBEBE4); // surface-container
-  static const superficieAlta = Color(0xFFE0E0D8); // surface-container-highest
-
-  // Texto
-  static const texto = Color(0xFF111D23);
-  static const textoSuave = Color(0xFF40493D);
-  static const contorno = Color(0xFF707A6C);
-
-  static const erro = Color(0xFFBA1A1A);
-  static const erroClaro = Color(0xFFFFDAD6);
+  static Color get primaria => _atual.primaria;
+  static Color get verde => _atual.verde;
+  static Color get verdeFixo => _atual.verdeFixo;
+  static Color get noVerdeFixo => _atual.noVerdeFixo;
+  static Color get verdeNav => _atual.verdeNav;
+  static Color get laranja => _atual.laranja;
+  static Color get noLaranja => _atual.noLaranja;
+  static Color get laranjaTexto => _atual.laranjaTexto;
+  static Color get laranjaFixo => _atual.laranjaFixo;
+  static Color get noLaranjaFixo => _atual.noLaranjaFixo;
+  static Color get terra => _atual.terra;
+  static Color get fundo => _atual.fundo;
+  static Color get branco => _atual.branco;
+  static Color get superficieBaixa => _atual.superficieBaixa;
+  static Color get superficie => _atual.superficie;
+  static Color get superficieAlta => _atual.superficieAlta;
+  static Color get texto => _atual.texto;
+  static Color get textoSuave => _atual.textoSuave;
+  static Color get contorno => _atual.contorno;
+  static Color get erro => _atual.erro;
+  static Color get erroClaro => _atual.erroClaro;
 }
 
 abstract final class Sombras {
@@ -77,9 +168,20 @@ abstract final class Sombras {
   ];
 }
 
-ThemeData criarTema() {
+ThemeData criarTema({bool escuro = false}) {
+  final anterior = Cores.escuro;
+  Cores.escuro = escuro;
+  try {
+    return _tema(escuro);
+  } finally {
+    Cores.escuro = anterior;
+  }
+}
+
+ThemeData _tema(bool escuro) {
   final esquema = ColorScheme.fromSeed(
     seedColor: Cores.verde,
+    brightness: escuro ? Brightness.dark : Brightness.light,
     primary: Cores.primaria,
     primaryContainer: Cores.verde,
     secondary: Cores.laranjaTexto,
@@ -165,11 +267,11 @@ ThemeData criarTema() {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Cores.verde, width: 1.5),
+        borderSide: BorderSide(color: Cores.verde, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Cores.erro),
+        borderSide: BorderSide(color: Cores.erro),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
@@ -200,9 +302,7 @@ ThemeData criarTema() {
       actionTextColor: Cores.verdeFixo,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
-    progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Cores.verde,
-    ),
-    dividerTheme: const DividerThemeData(color: Cores.superficie, space: 1),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: Cores.verde),
+    dividerTheme: DividerThemeData(color: Cores.superficie, space: 1),
   );
 }

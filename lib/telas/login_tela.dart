@@ -104,7 +104,7 @@ class _LoginTelaState extends State<LoginTela> {
                           width: 80,
                           height: 80,
                           padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: Cores.branco,
                             shape: BoxShape.circle,
                             boxShadow: Sombras.media,
@@ -117,7 +117,7 @@ class _LoginTelaState extends State<LoginTela> {
                           child: Container(
                             width: 28,
                             height: 28,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: Cores.laranja,
                               shape: BoxShape.circle,
                               boxShadow: Sombras.leve,

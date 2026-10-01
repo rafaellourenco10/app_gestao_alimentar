@@ -60,10 +60,7 @@ class ComprasTela extends StatelessWidget {
                                 subject: 'Lista de compras',
                               ),
                             ),
-                            icon: const Icon(
-                              Icons.share,
-                              color: Cores.primaria,
-                            ),
+                            icon: Icon(Icons.share, color: Cores.primaria),
                           ),
                   ),
                   const SizedBox(height: 16),
@@ -207,11 +204,7 @@ class _Linha extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: 'Tirar ${item.alimento.nomeCurto} da lista',
-                  icon: const Icon(
-                    Icons.close,
-                    size: 18,
-                    color: Cores.textoSuave,
-                  ),
+                  icon: Icon(Icons.close, size: 18, color: Cores.textoSuave),
                   onPressed: () => dados.removerCompra(id),
                 ),
               ],

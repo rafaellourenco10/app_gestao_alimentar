@@ -161,7 +161,7 @@ class _CozinharTelaState extends State<CozinharTela> {
                           backgroundColor: Cores.superficieBaixa,
                         ),
                         onPressed: () => _ir(_pagina - 1),
-                        icon: const Icon(Icons.arrow_back, color: Cores.texto),
+                        icon: Icon(Icons.arrow_back, color: Cores.texto),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -262,7 +262,7 @@ class _CozinharTelaState extends State<CozinharTela> {
           Container(
             width: 56,
             height: 56,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Cores.verde,
               shape: BoxShape.circle,
             ),
@@ -288,7 +288,7 @@ class _CozinharTelaState extends State<CozinharTela> {
               child: ativo
                   ? Row(
                       children: [
-                        const Icon(Icons.timer, color: Cores.laranja, size: 32),
+                        Icon(Icons.timer, color: Cores.laranja, size: 32),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -316,7 +316,7 @@ class _CozinharTelaState extends State<CozinharTela> {
                       onTap: () => _iniciarTimer(i, minutos),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.timer_outlined,
                             color: Cores.laranja,
                             size: 32,
@@ -328,7 +328,7 @@ class _CozinharTelaState extends State<CozinharTela> {
                               style: textos.titleMedium,
                             ),
                           ),
-                          const Icon(Icons.play_circle, color: Cores.laranja),
+                          Icon(Icons.play_circle, color: Cores.laranja),
                         ],
                       ),
                     ),

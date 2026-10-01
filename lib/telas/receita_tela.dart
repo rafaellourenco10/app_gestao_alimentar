@@ -159,17 +159,13 @@ class _ReceitaTelaState extends State<ReceitaTela> {
             children: [
               _botaoRedondo(
                 dica: 'Voltar',
-                icone: const Icon(
-                  Icons.arrow_back,
-                  size: 22,
-                  color: Cores.texto,
-                ),
+                icone: Icon(Icons.arrow_back, size: 22, color: Cores.texto),
                 onPressed: () => Navigator.pop(context),
               ),
               const Spacer(),
               _botaoRedondo(
                 dica: 'Compartilhar receita',
-                icone: const Icon(Icons.share, size: 20, color: Cores.texto),
+                icone: Icon(Icons.share, size: 20, color: Cores.texto),
                 onPressed: () =>
                     compartilharReceita(context, receita, fator: _fator),
               ),
@@ -297,7 +293,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.restaurant, size: 18, color: Cores.laranjaTexto),
+          Icon(Icons.restaurant, size: 18, color: Cores.laranjaTexto),
           const SizedBox(width: 4),
           botao(
             Icons.remove,
@@ -375,11 +371,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
     return _secao(
       context,
       'Tabela nutricional',
-      icone: const Icon(
-        Icons.local_dining,
-        size: 22,
-        color: Cores.laranjaTexto,
-      ),
+      icone: Icon(Icons.local_dining, size: 22, color: Cores.laranjaTexto),
       direita: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
@@ -397,7 +389,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
               TextSpan(text: 'kcal', style: textos.labelMedium),
             ],
           ),
-          style: const TextStyle(color: Cores.noLaranjaFixo),
+          style: TextStyle(color: Cores.noLaranjaFixo),
         ),
       ),
       filhos: [
@@ -498,7 +490,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
           OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
               foregroundColor: Cores.laranjaTexto,
-              side: const BorderSide(color: Cores.laranjaFixo, width: 1.5),
+              side: BorderSide(color: Cores.laranjaFixo, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -587,7 +579,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
                 Container(
                   width: 32,
                   height: 32,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Cores.verde,
                     shape: BoxShape.circle,
                   ),

@@ -159,7 +159,7 @@ class _DespensaTelaState extends State<DespensaTela> {
             Container(
               width: 40,
               height: 40,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Cores.laranja,
                 shape: BoxShape.circle,
               ),
@@ -205,11 +205,11 @@ class _DespensaTelaState extends State<DespensaTela> {
               Container(
                 width: 40,
                 height: 40,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Cores.laranjaFixo,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.tips_and_updates_outlined,
                   size: 22,
                   color: Cores.noLaranjaFixo,
@@ -286,8 +286,7 @@ class _DespensaTelaState extends State<DespensaTela> {
                         width: 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color:
-                              corCategoria[categoria] ?? Cores.superficieAlta,
+                          color: corCategoria(categoria),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -376,11 +375,7 @@ class _DespensaTelaState extends State<DespensaTela> {
                     style: IconButton.styleFrom(
                       backgroundColor: Cores.superficie,
                     ),
-                    icon: const Icon(
-                      Icons.close,
-                      size: 15,
-                      color: Cores.textoSuave,
-                    ),
+                    icon: Icon(Icons.close, size: 15, color: Cores.textoSuave),
                     onPressed: () => _remover(item),
                   ),
                 ),
@@ -570,11 +565,7 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
                 padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.event_outlined,
-                      size: 20,
-                      color: Cores.contorno,
-                    ),
+                    Icon(Icons.event_outlined, size: 20, color: Cores.contorno),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(

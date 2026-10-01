@@ -97,7 +97,7 @@ class HistoricoTela extends StatelessWidget {
                     Container(
                       width: 44,
                       height: 44,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Cores.laranja,
                         shape: BoxShape.circle,
                       ),
@@ -216,7 +216,7 @@ class _Linha extends StatelessWidget {
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.local_fire_department,
                             size: 14,
                             color: Cores.laranja,
@@ -233,11 +233,7 @@ class _Linha extends StatelessWidget {
                           ),
                           if (receita.favorita) ...[
                             const SizedBox(width: 6),
-                            const Icon(
-                              Icons.favorite,
-                              size: 14,
-                              color: Cores.erro,
-                            ),
+                            Icon(Icons.favorite, size: 14, color: Cores.erro),
                           ],
                         ],
                       ),
@@ -247,11 +243,11 @@ class _Linha extends StatelessWidget {
                 Container(
                   width: 36,
                   height: 36,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Cores.superficieBaixa,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.arrow_forward,
                     size: 18,
                     color: Cores.verde,
