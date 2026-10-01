@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../busca_alimento.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
@@ -13,8 +14,6 @@ class DespensaTela extends StatefulWidget {
 }
 
 class _DespensaTelaState extends State<DespensaTela> {
-  TextEditingController? _busca;
-  FocusNode? _foco;
   String? _filtro; // null = Todos
 
   Future<void> _editar(Alimento a, {ItemDespensa? item}) async {
@@ -22,8 +21,6 @@ class _DespensaTelaState extends State<DespensaTela> {
       context: context,
       builder: (_) => _QuantidadeDialog(a, item: item),
     );
-    _busca?.clear();
-    _foco?.unfocus();
     if (resposta == null) return;
     final (quantidade, validade) = resposta;
     await dados.adicionarItem(a, quantidade, validade: validade);
@@ -84,7 +81,11 @@ class _DespensaTelaState extends State<DespensaTela> {
                 const SizedBox(height: 12),
                 _resumo(n),
                 const SizedBox(height: 12),
-                _campoBusca(),
+                BuscaAlimento(
+                  aoEscolher: (a) => _editar(a),
+                  jaTem: (a) => dados.temNaDespensa(a.id),
+                  sugestoes: () => dados.sugestoes,
+                ),
                 if (categorias.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   _filtros(categorias),
@@ -221,141 +222,6 @@ class _DespensaTelaState extends State<DespensaTela> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _campoBusca() {
-    final textos = Theme.of(context).textTheme;
-    return Autocomplete<Alimento>(
-      displayStringForOption: (a) => a.nomeCurto,
-      optionsBuilder: (v) =>
-          v.text.trim().isEmpty ? dados.sugestoes : dados.buscar(v.text),
-      onSelected: (a) => _editar(a),
-      fieldViewBuilder: (context, controller, foco, onSubmitted) {
-        _busca = controller;
-        _foco = foco;
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: Sombras.leve,
-          ),
-          child: TextField(
-            controller: controller,
-            focusNode: foco,
-            textInputAction: TextInputAction.search,
-            onSubmitted: (_) => onSubmitted(),
-            decoration: InputDecoration(
-              hintText: 'Adicionar alimento… (ex: ovo, tomate)',
-              prefixIcon: const Icon(Icons.search, size: 20),
-              fillColor: Cores.branco,
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Cores.verde, width: 1.5),
-              ),
-            ),
-          ),
-        );
-      },
-      optionsViewBuilder: (context, onSelected, opcoes) {
-        final sugestao = (_busca?.text.trim() ?? '').isEmpty;
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Material(
-              elevation: 12,
-              shadowColor: const Color(0x33000000),
-              color: Cores.branco,
-              borderRadius: BorderRadius.circular(16),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 320,
-                  maxWidth: MediaQuery.sizeOf(context).width - 40,
-                ),
-                child: ListView(
-                  padding: const EdgeInsets.all(8),
-                  shrinkWrap: true,
-                  children: [
-                    if (sugestao)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'SUGESTÕES RÁPIDAS',
-                                style: textos.labelSmall?.copyWith(
-                                  color: Cores.textoSuave,
-                                ),
-                              ),
-                            ),
-                            const Icon(
-                              Icons.auto_awesome,
-                              size: 14,
-                              color: Cores.textoSuave,
-                            ),
-                          ],
-                        ),
-                      ),
-                    for (final a in opcoes) _opcao(a, () => onSelected(a)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _opcao(Alimento a, VoidCallback onTap) {
-    final textos = Theme.of(context).textTheme;
-    final tem = dados.temNaDespensa(a.id);
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Text(emojiDe(a), style: const TextStyle(fontSize: 22)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(a.nomeCurto, style: textos.labelLarge),
-                  Text(
-                    a.curto == null ? a.categoria : a.nome,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            tem
-                ? const Pilula(
-                    'Na despensa',
-                    icone: Icons.check,
-                    fundo: Cores.superficie,
-                    cor: Cores.textoSuave,
-                  )
-                : const Pilula(
-                    'Adicionar',
-                    icone: Icons.add,
-                    fundo: Cores.verdeFixo,
-                    cor: Cores.noVerdeFixo,
-                  ),
-          ],
-        ),
       ),
     );
   }

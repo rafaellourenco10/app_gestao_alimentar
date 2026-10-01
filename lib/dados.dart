@@ -133,6 +133,13 @@ class Receita {
       porcoes;
 }
 
+class ItemCompra {
+  ItemCompra(this.alimento, this.quantidade);
+  final Alimento alimento;
+  String? quantidade;
+  bool comprado = false;
+}
+
 /// Uma vez em que o usuário cozinhou uma receita.
 class Cozinhado {
   const Cozinhado(this.receita, this.quando, this.aproveitados);
@@ -156,6 +163,7 @@ class Dados extends ChangeNotifier {
   final List<Receita> receitas = [];
   final List<DateTime> _geracoes = [];
   final List<Cozinhado> cozinhados = [];
+  final List<ItemCompra> compras = [];
   String? email;
 
   /// Substituíveis nos testes.
@@ -257,6 +265,70 @@ class Dados extends ChangeNotifier {
     despensa.removeWhere((i) => i.alimento.id == alimentoId);
     notifyListeners();
   }
+
+  // ---------- Lista de compras ----------
+
+  Future<void> adicionarCompra(Alimento a, String? quantidade) async {
+    final q = quantidade?.trim();
+    final existente = compras.where((c) => c.alimento.id == a.id).firstOrNull;
+    if (existente != null) {
+      existente.quantidade = q == null || q.isEmpty ? existente.quantidade : q;
+    } else {
+      compras.add(ItemCompra(a, q == null || q.isEmpty ? null : q));
+    }
+    notifyListeners();
+  }
+
+  Future<void> removerCompra(int alimentoId) async {
+    compras.removeWhere((c) => c.alimento.id == alimentoId);
+    notifyListeners();
+  }
+
+  Future<void> alternarComprado(int alimentoId) async {
+    final c = compras.firstWhere((c) => c.alimento.id == alimentoId);
+    c.comprado = !c.comprado;
+    notifyListeners();
+  }
+
+  /// Ingredientes da receita que não estão na despensa (fora os básicos).
+  List<Ingrediente> faltando(Receita r) => [
+    for (final i in r.ingredientes)
+      if (!basicos.contains(i.alimento.id) && !temNaDespensa(i.alimento.id)) i,
+  ];
+
+  /// Põe na lista o que falta para a receita; devolve quantos entraram.
+  Future<int> adicionarFaltando(Receita r, double fator) async {
+    final itens = faltando(r);
+    for (final i in itens) {
+      await adicionarCompra(i.alimento, escalarMedida(i.medida, fator));
+    }
+    return itens.length;
+  }
+
+  /// Passa os itens marcados como comprados para a despensa.
+  Future<int> guardarComprados() async {
+    final comprados = compras.where((c) => c.comprado).toList();
+    for (final c in comprados) {
+      final atual = despensa
+          .where((i) => i.alimento.id == c.alimento.id)
+          .firstOrNull;
+      await adicionarItem(
+        c.alimento,
+        c.quantidade ?? atual?.quantidade,
+        validade: atual?.validade,
+      );
+    }
+    compras.removeWhere((c) => c.comprado);
+    notifyListeners();
+    return comprados.length;
+  }
+
+  String get textoDaLista => [
+    '🛒 Lista de compras — NutriCasa',
+    '',
+    for (final c in compras.where((c) => !c.comprado))
+      '• ${c.alimento.nomeCurto}${c.quantidade == null ? '' : ' — ${c.quantidade}'}',
+  ].join('\n');
 
   // ---------- Receitas ----------
 

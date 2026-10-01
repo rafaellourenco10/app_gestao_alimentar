@@ -184,4 +184,24 @@ void main() {
     await d.registrarCozinhado(r, {489: '4 un'});
     expect(d.despensa.first.validade, DateTime(2026, 10, 20));
   });
+
+  test(
+    'lista de compras: o que falta, comprados para a despensa e texto',
+    () async {
+      await d.adicionarItem(d.alimento(489), '6 un');
+      final r = (await d.gerarCardapio()).first; // omelete
+      expect(d.faltando(r).map((i) => i.alimento.id), [157, 107, 461]);
+      expect(await d.adicionarFaltando(r, 2), 3);
+      expect(d.compras.first.quantidade, '1 tomate picado');
+      await d.adicionarCompra(d.alimento(157), '1 kg'); // não duplica
+      expect(d.compras.length, 3);
+      expect(d.compras.first.quantidade, '1 kg');
+      await d.alternarComprado(157);
+      expect(d.textoDaLista, contains('• Cebola — ½ de cebola picada'));
+      expect(d.textoDaLista, isNot(contains('Tomate')));
+      expect(await d.guardarComprados(), 1);
+      expect(d.temNaDespensa(157), isTrue);
+      expect(d.compras.length, 2);
+    },
+  );
 }
