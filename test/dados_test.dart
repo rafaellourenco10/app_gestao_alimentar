@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutricasa/dados.dart';
+import 'package:nutricasa/widgets.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -242,5 +243,33 @@ void main() {
     expect(r.cozinhadas, 2);
     expect(r.aproveitados, 2);
     expect(r.dias, [false, false, false, false, true, false, true]);
+  });
+
+  test('foto do prato pelo título, ingredientes ou tipo', () async {
+    await d.adicionarItem(d.alimento(489), null);
+    final rs = await d.gerarCardapio();
+    expect(rs.map(fotoDe), [
+      'assets/fotos/ovo.jpg',
+      'assets/fotos/frango.jpg',
+      'assets/fotos/panqueca.jpg',
+    ]);
+    final r = rs[1];
+    Receita com(String titulo, {List<Ingrediente>? ing}) => Receita(
+      id: 'x',
+      titulo: titulo,
+      tipo: 'lanche',
+      tempoMin: 1,
+      porcoes: 1,
+      dificuldade: 'Fácil',
+      criadaEm: r.criadaEm,
+      ingredientes: ing ?? [],
+      passos: [],
+    );
+    expect(fotoDe(com('Salada de frutas')), 'assets/fotos/frutas.jpg');
+    expect(fotoDe(com('Prato novo')), 'assets/fotos/sanduiche.jpg');
+    expect(
+      fotoDe(com('Prato', ing: r.ingredientes)),
+      'assets/fotos/frango.jpg',
+    );
   });
 }

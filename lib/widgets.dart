@@ -391,90 +391,73 @@ class Dica extends StatelessWidget {
 
 /// Área de imagem da receita. Sem fotos por enquanto: degradê do tipo de refeição
 /// com os ingredientes principais em "pratinhos".
+// Palavra-chave (sem acento) → foto em assets/fotos. A ordem importa:
+// "salada de fruta" antes de "salada", "omelete" antes de "frango" etc.
+const _fotos = [
+  (['omelete', 'ovo', 'ovos'], 'ovo'),
+  (['panqueca', 'crepe', 'tapioca', 'waffle'], 'panqueca'),
+  (['bolo', 'muffin', 'cuca'], 'bolo'),
+  (['vitamina', 'smoothie', 'suco', 'batida'], 'vitamina'),
+  (['sopa', 'caldo', 'creme de'], 'sopa'),
+  (['salada de fruta'], 'frutas'),
+  (['salada'], 'salada'),
+  (['sanduiche', 'misto', 'torrada', 'pao', 'wrap'], 'sanduiche'),
+  (['macarr', 'massa', 'espaguete', 'lasanha', 'nhoque', 'talharim'], 'massa'),
+  (
+    ['peixe', 'tilapia', 'sardinha', 'atum', 'salmao', 'bacalhau', 'merluza'],
+    'peixe',
+  ),
+  (['frango', 'galinha', 'coxa', 'sobrecoxa'], 'frango'),
+  (
+    ['carne', 'bife', 'patinho', 'acem', 'alcatra', 'moida', 'porco', 'lombo'],
+    'carne',
+  ),
+  (['feij', 'lentilha', 'grao-de-bico'], 'feijao'),
+  (
+    ['legume', 'refogad', 'abobrinha', 'brocolis', 'berinjela', 'cenoura'],
+    'legumes',
+  ),
+  (['fruta', 'banana', 'maca', 'mamao', 'manga', 'morango'], 'frutas'),
+];
+
+const _fotoDoTipo = {
+  'cafe_da_manha': 'cafe',
+  'almoco_jantar': 'feijao',
+  'lanche': 'sanduiche',
+};
+
+/// Foto do prato: pelo título, senão pelos ingredientes, senão pelo tipo.
+String fotoDe(Receita r) {
+  final ingredientes = r.ingredientes
+      .where((i) => !basicos.contains(i.alimento.id))
+      .map((i) => i.alimento.nome)
+      .join(' ');
+  for (final texto in [r.titulo, ingredientes]) {
+    // Espaço antes = início de palavra ("ovo" não casa com "novo").
+    final t = ' ${normalizar(texto).replaceAll(',', ' ')}';
+    for (final (chaves, foto) in _fotos) {
+      if (chaves.any((c) => t.contains(' $c'))) return 'assets/fotos/$foto.jpg';
+    }
+  }
+  return 'assets/fotos/${_fotoDoTipo[r.tipo] ?? 'cafe'}.jpg';
+}
+
 class ImagemReceita extends StatelessWidget {
-  const ImagemReceita(
-    this.receita, {
-    super.key,
-    required this.altura,
-    this.tamanho = 1,
-  });
+  const ImagemReceita(this.receita, {super.key, required this.altura});
 
   final Receita receita;
   final double altura;
-  final double tamanho;
 
   @override
   Widget build(BuildContext context) {
-    final (_, cores) = tipoReceita(receita.tipo);
-    final emojis = receita.ingredientes
-        .where((i) => !basicos.contains(i.alimento.id))
-        .map((i) => emojiDe(i.alimento))
-        .toSet()
-        .take(3)
-        .toList();
-    return Container(
+    return Image.asset(
+      fotoDe(receita),
       height: altura,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: cores,
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Folhinhas decorativas no fundo
-          Positioned(
-            right: -18,
-            bottom: -24,
-            child: Icon(
-              Icons.eco,
-              size: 120 * tamanho,
-              color: Colors.white.withValues(alpha: Cores.escuro ? 0.06 : 0.35),
-            ),
-          ),
-          Positioned(
-            left: -14,
-            top: -10,
-            child: Icon(
-              Icons.spa,
-              size: 80 * tamanho,
-              color: Colors.white.withValues(alpha: Cores.escuro ? 0.05 : 0.25),
-            ),
-          ),
-          Center(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final (n, e) in emojis.indexed)
-                    Transform.translate(
-                      offset: Offset(0, n == 1 ? -8 * tamanho : 6 * tamanho),
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 6 * tamanho),
-                        width: (n == 1 ? 76 : 62) * tamanho,
-                        height: (n == 1 ? 76 : 62) * tamanho,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: Sombras.card,
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          e,
-                          style: TextStyle(
-                            fontSize: (n == 1 ? 40 : 32) * tamanho,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+      width: double.infinity,
+      fit: BoxFit.cover,
+      // No escuro a foto fica um pouco mais apagada para não ofuscar.
+      color: Cores.escuro ? Colors.black26 : null,
+      colorBlendMode: BlendMode.darken,
     );
   }
 }

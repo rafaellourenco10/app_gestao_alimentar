@@ -180,7 +180,7 @@ class _Linha extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: SizedBox(
                     width: 88,
-                    child: ImagemReceita(receita, altura: 88, tamanho: 0.45),
+                    child: ImagemReceita(receita, altura: 88),
                   ),
                 ),
                 const SizedBox(width: 12),

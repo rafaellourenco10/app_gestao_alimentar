@@ -148,11 +148,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
     final (tem, total) = dados.cobertura(receita);
     return Stack(
       children: [
-        ImagemReceita(
-          receita,
-          altura: 288 + MediaQuery.paddingOf(context).top,
-          tamanho: 1.3,
-        ),
+        ImagemReceita(receita, altura: 288 + MediaQuery.paddingOf(context).top),
         Positioned(
           left: 16,
           right: 16,

@@ -161,7 +161,7 @@ Cada fase termina com algo funcionando que dá para testar.
 
 ### Fase 1.6: Próximas melhorias (escolhidas em 01/10/2026)
 - [x] Ícone do app e tela de abertura com o logo do Stitch
-- [ ] Fotos por tipo de prato no lugar dos emojis
+- [x] Fotos por tipo de prato no lugar dos emojis
 - [ ] Política de privacidade completa (LGPD)
 - [ ] Testes automáticos no GitHub (Actions: analyze + test)
 - [ ] Preferências alimentares (vegetariano, sem lactose/glúten, alergias, meta de calorias)
