@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dados.dart';
 import 'tema.dart';
+import 'telas/compras_tela.dart';
 import 'telas/despensa_tela.dart';
 import 'telas/favoritos_tela.dart';
 import 'telas/historico_tela.dart';
@@ -56,7 +57,29 @@ class _InicioState extends State<Inicio> {
   Widget build(BuildContext context) {
     final textos = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: Topo(_titulos[_aba]),
+      appBar: Topo(
+        _titulos[_aba],
+        acoes: [
+          ListenableBuilder(
+            listenable: dados,
+            builder: (context, _) {
+              final n = dados.compras.where((c) => !c.comprado).length;
+              return IconButton(
+                tooltip: 'Lista de compras',
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => const ComprasTela()),
+                ),
+                icon: Badge(
+                  isLabelVisible: n > 0,
+                  label: Text('$n'),
+                  backgroundColor: Cores.laranja,
+                  child: const Icon(Icons.shopping_cart_outlined),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: IndexedStack(
         index: _aba,
         children: const [

@@ -151,7 +151,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Modo cozinhar: passo a passo em tela cheia, tela sempre acesa, timer por etapa
 - [x] "Cozinhei!": desconta da despensa o que foi usado
 - [x] Validade dos alimentos (aviso de vencimento)
-- [ ] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
+- [x] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
 - [ ] Adicionar alimentos por voz
 - [ ] Boas-vindas na primeira abertura
 - [ ] Compartilhar receita como imagem

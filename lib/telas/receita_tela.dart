@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
+import 'compras_tela.dart';
 import 'cozinhar_tela.dart';
 import 'cozinhei_sheet.dart';
 
@@ -85,6 +86,28 @@ class _ReceitaTelaState extends State<ReceitaTela> {
         ),
       ),
     );
+  }
+
+  Future<void> _adicionarFaltando() async {
+    final n = await dados.adicionarFaltando(receita, _fator);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            n == 1
+                ? '1 item na lista de compras'
+                : '$n itens na lista de compras',
+          ),
+          action: SnackBarAction(
+            label: 'Ver lista',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const ComprasTela()),
+            ),
+          ),
+        ),
+      );
   }
 
   Future<void> _cozinhar() async {
@@ -463,6 +486,20 @@ class _ReceitaTelaState extends State<ReceitaTela> {
         ),
         const SizedBox(height: 12),
         for (final i in receita.ingredientes) _ingrediente(context, i),
+        if (dados.faltando(receita).isNotEmpty)
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Cores.laranjaTexto,
+              side: const BorderSide(color: Cores.laranjaFixo, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              minimumSize: const Size.fromHeight(48),
+            ),
+            onPressed: _adicionarFaltando,
+            icon: const Icon(Icons.add_shopping_cart, size: 20),
+            label: const Text('Adicionar o que falta à lista'),
+          ),
       ],
     );
   }

@@ -177,10 +177,16 @@ class BotaoPrincipal extends StatelessWidget {
 
 /// Topo das telas: logo, "NutriCasa" e o título; avatar à direita.
 class Topo extends StatelessWidget implements PreferredSizeWidget {
-  const Topo(this.titulo, {super.key, this.voltar = false});
+  const Topo(
+    this.titulo, {
+    super.key,
+    this.voltar = false,
+    this.acoes = const [],
+  });
 
   final String titulo;
   final bool voltar;
+  final List<Widget> acoes;
 
   @override
   Size get preferredSize => const Size.fromHeight(64);
@@ -231,6 +237,7 @@ class Topo extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
+                ...acoes,
                 Avatar(email: dados.email ?? '', raio: 16),
               ],
             ),
