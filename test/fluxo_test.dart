@@ -88,6 +88,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Tabela nutricional'), findsOneWidget);
       expect(find.text('2 ovos'), findsOneWidget);
+
+      // Prévia do cartão para compartilhar.
+      await tester.tap(find.byTooltip('Compartilhar receita'));
+      await tester.pumpAndSettle();
+      expect(find.text('Compartilhar'), findsOneWidget);
+      expect(find.textContaining('feito com o app NutriCasa'), findsOneWidget);
+      await tester.tap(find.text('Cancelar'));
+      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Mais porções'));
       await tester.pump();
       expect(find.text('2 porções'), findsOneWidget);

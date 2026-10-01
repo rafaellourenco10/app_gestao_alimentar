@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
+import 'compartilhar_receita.dart';
 import 'compras_tela.dart';
 import 'cozinhar_tela.dart';
 import 'cozinhei_sheet.dart';
@@ -166,6 +167,13 @@ class _ReceitaTelaState extends State<ReceitaTela> {
                 onPressed: () => Navigator.pop(context),
               ),
               const Spacer(),
+              _botaoRedondo(
+                dica: 'Compartilhar receita',
+                icone: const Icon(Icons.share, size: 20, color: Cores.texto),
+                onPressed: () =>
+                    compartilharReceita(context, receita, fator: _fator),
+              ),
+              const SizedBox(width: 8),
               BotaoFavorito(receita),
             ],
           ),

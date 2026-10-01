@@ -154,7 +154,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
 - [x] Adicionar alimentos por voz
 - [x] Boas-vindas na primeira abertura
-- [ ] Compartilhar receita como imagem
+- [x] Compartilhar receita como imagem
 - [ ] Modo escuro
 - [ ] Resumo da semana (dados reais)
 - [ ] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
