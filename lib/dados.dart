@@ -165,6 +165,9 @@ class Dados extends ChangeNotifier {
   final List<DateTime> _geracoes = [];
   final List<Cozinhado> cozinhados = [];
   final List<ItemCompra> compras = [];
+
+  /// Plano da semana: dia (0 = segunda … 6 = domingo) → receita.
+  final Map<int, Receita> plano = {};
   String? email;
 
   // Preferências guardadas no celular.
@@ -365,6 +368,25 @@ class Dados extends ChangeNotifier {
       await adicionarCompra(i.alimento, escalarMedida(i.medida, fator));
     }
     return itens.length;
+  }
+
+  Future<void> planejar(int dia, Receita? r) async {
+    r == null ? plano.remove(dia) : plano[dia] = r;
+    notifyListeners();
+  }
+
+  /// Põe na lista o que falta para todas as receitas do plano (sem repetir).
+  // ponytail: o mesmo alimento em duas receitas fica com a medida da última;
+  // somar gramas quando a lista mostrar quantidades em gramas.
+  Future<int> adicionarFaltandoDoPlano() async {
+    final ids = <int>{};
+    for (final r in plano.values) {
+      for (final i in faltando(r)) {
+        ids.add(i.alimento.id);
+        await adicionarCompra(i.alimento, i.medida);
+      }
+    }
+    return ids.length;
   }
 
   /// Passa os itens marcados como comprados para a despensa.

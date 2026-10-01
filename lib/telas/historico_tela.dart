@@ -4,6 +4,7 @@ import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
 import 'gerando_tela.dart';
+import 'plano_tela.dart';
 import 'receita_tela.dart';
 
 class HistoricoTela extends StatelessWidget {
@@ -40,6 +41,16 @@ class HistoricoTela extends StatelessWidget {
               titulo: 'Meus cardápios',
               subtitulo: 'Sugestões geradas pela IA com a sua despensa',
             ),
+            if (dados.receitas.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => const PlanoTela()),
+                ),
+                icon: const Icon(Icons.calendar_month_outlined),
+                label: const Text('Plano da semana'),
+              ),
+            ],
             if (dados.receitas.isEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 24),

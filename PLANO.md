@@ -166,7 +166,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Testes automáticos no GitHub (Actions: analyze + test)
 - [x] Preferências alimentares (vegetariano, sem lactose/glúten, alergias, meta de calorias)
 - [x] Notificação de validade (aviso no celular mesmo com o app fechado)
-- [ ] Plano da semana + lista de compras do que falta
+- [x] Plano da semana + lista de compras do que falta
 
 ### Fase 2: Supabase (3–5 dias)
 - [ ] Criar o projeto no Supabase e pegar a URL e a anon key
