@@ -7,7 +7,8 @@
 - Calorias/macros são calculadas pela TACO, nunca confiar no valor da IA.
 - Visual: `stitch_strategic_plan_execution/` (telas + DESIGN.md) com os ajustes da seção "Visual" do PLANO.md (fundo `#FAFAF7`, sem itens fora do MVP).
 - UI em português do Brasil.
-- Um commit por pedaço funcionando.
+- Um commit por **fase completa** (`flutter analyze` + `flutter test` limpos). **Nunca dar push** — o usuário sobe pro GitHub.
+- O usuário testa no próprio celular (`flutter run`); não usar emulador.
 
 ## graphify
 

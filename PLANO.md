@@ -128,10 +128,10 @@ Cada fase termina com algo funcionando que dá para testar.
 
 ### Fase 0: Setup (meio dia)
 - [x] Flutter instalado
-- [ ] Rodar `flutter doctor` sem erros e ter um emulador ou celular conectado
-- [ ] Criar o repositório git e o projeto `flutter create`
+- [x] `flutter doctor` OK para Android (o usuário testa no próprio celular com `flutter run`)
+- [x] Criar o repositório git e o projeto `flutter create`
 
-**Pronto quando:** o app padrão abre no emulador.
+**Pronto quando:** o app padrão abre no celular.
 
 ### Fase 1: App completo com dados falsos (1–2 semanas)
 - [ ] Tema (cores, fonte, raios) a partir do `DESIGN.md`
