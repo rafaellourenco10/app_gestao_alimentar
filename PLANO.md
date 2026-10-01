@@ -159,6 +159,15 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Resumo da semana (dados reais)
 - [x] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
 
+### Fase 1.6: Próximas melhorias (escolhidas em 01/10/2026)
+- [ ] Ícone do app e tela de abertura com o logo do Stitch
+- [ ] Fotos por tipo de prato no lugar dos emojis
+- [ ] Política de privacidade completa (LGPD)
+- [ ] Testes automáticos no GitHub (Actions: analyze + test)
+- [ ] Preferências alimentares (vegetariano, sem lactose/glúten, alergias, meta de calorias)
+- [ ] Notificação de validade (aviso no celular mesmo com o app fechado)
+- [ ] Plano da semana + lista de compras do que falta
+
 ### Fase 2: Supabase (3–5 dias)
 - [ ] Criar o projeto no Supabase e pegar a URL e a anon key
 - [ ] Importar a TACO completa em `alimentos` (os valores "Tr" e "NA" viram 0 ou null)
