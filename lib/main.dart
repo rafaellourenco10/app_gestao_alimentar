@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'dados.dart';
 import 'tema.dart';
@@ -19,7 +21,18 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dados.carregarAlimentos();
   await dados.carregarPreferencias();
-  runApp(const NutriCasaApp());
+
+  // Relatório de erros: só liga com a chave (flutter run --dart-define=SENTRY_DSN=...).
+  const dsn = String.fromEnvironment('SENTRY_DSN');
+  if (dsn.isEmpty) return runApp(const NutriCasaApp());
+  await SentryFlutter.init(
+    (o) => o
+      ..dsn = dsn
+      ..sendDefaultPii =
+          false // nunca envia e-mail ou dados pessoais
+      ..environment = kReleaseMode ? 'producao' : 'desenvolvimento',
+    appRunner: () => runApp(const NutriCasaApp()),
+  );
 }
 
 class NutriCasaApp extends StatelessWidget {

@@ -157,7 +157,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Compartilhar receita como imagem
 - [x] Modo escuro
 - [x] Resumo da semana (dados reais)
-- [ ] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
+- [x] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
 
 ### Fase 2: Supabase (3–5 dias)
 - [ ] Criar o projeto no Supabase e pegar a URL e a anon key
