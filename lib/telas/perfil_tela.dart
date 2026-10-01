@@ -94,6 +94,8 @@ class PerfilTela extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
+            _semana(context),
+            const SizedBox(height: 12),
             Cartao(
               raio: 16,
               sombra: Sombras.card,
@@ -229,6 +231,101 @@ class PerfilTela extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  /// "Sua semana": números reais dos últimos 7 dias + dias em que cozinhou.
+  Widget _semana(BuildContext context) {
+    final textos = Theme.of(context).textTheme;
+    final r = dados.resumoSemana;
+    final hoje = DateUtils.dateOnly(dados.agora());
+    const iniciais = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']; // segunda..domingo
+    final diasCozinhados = r.dias.where((d) => d).length;
+
+    Widget numero(String valor, String rotulo) => Expanded(
+      child: Column(
+        children: [
+          Text(valor, style: textos.headlineSmall),
+          Text(
+            rotulo,
+            textAlign: TextAlign.center,
+            style: textos.labelSmall?.copyWith(color: Cores.textoSuave),
+          ),
+        ],
+      ),
+    );
+
+    return Cartao(
+      raio: 16,
+      sombra: Sombras.card,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.insights, color: Cores.laranja),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Sua semana', style: textos.titleMedium)),
+              Text(
+                'últimos 7 dias',
+                style: textos.labelSmall?.copyWith(color: Cores.textoSuave),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              numero('${r.geradas}', 'receitas\ngeradas'),
+              numero('${r.cozinhadas}', 'receitas\ncozinhadas'),
+              numero('${r.aproveitados}', 'alimentos\naproveitados'),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (final (i, cozinhou) in r.dias.indexed)
+                Column(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: cozinhou ? Cores.verde : Cores.superficieBaixa,
+                        shape: BoxShape.circle,
+                        border: i == 6
+                            ? Border.all(color: Cores.laranja, width: 2)
+                            : null,
+                      ),
+                      child: cozinhou
+                          ? const Icon(
+                              Icons.check,
+                              size: 18,
+                              color: Colors.white,
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      iniciais[hoje.subtract(Duration(days: 6 - i)).weekday -
+                          1],
+                      style: textos.labelSmall?.copyWith(
+                        color: i == 6 ? Cores.laranjaTexto : Cores.textoSuave,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            diasCozinhados == 0
+                ? 'Toque em "Já fiz esta receita" quando cozinhar para acompanhar aqui.'
+                : 'Você cozinhou em $diasCozinhados dos últimos 7 dias. Continue assim! 💚',
+            style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
+          ),
+        ],
+      ),
     );
   }
 

@@ -156,7 +156,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Boas-vindas na primeira abertura
 - [x] Compartilhar receita como imagem
 - [x] Modo escuro
-- [ ] Resumo da semana (dados reais)
+- [x] Resumo da semana (dados reais)
 - [ ] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
 
 ### Fase 2: Supabase (3–5 dias)

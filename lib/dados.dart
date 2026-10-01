@@ -362,6 +362,28 @@ class Dados extends ChangeNotifier {
 
   List<Receita> get favoritas => receitas.where((r) => r.favorita).toList();
 
+  /// Últimos 7 dias (hoje incluído): números reais do uso do app.
+  /// `dias[6]` é hoje; `true` = cozinhou naquele dia.
+  ({int geradas, int cozinhadas, int aproveitados, List<bool> dias})
+  get resumoSemana {
+    final hoje = DateUtils.dateOnly(agora());
+    final inicio = hoje.subtract(const Duration(days: 6));
+    bool naSemana(DateTime d) => !DateUtils.dateOnly(d).isBefore(inicio);
+    final feitos = cozinhados.where((c) => naSemana(c.quando)).toList();
+    return (
+      geradas: receitas.where((r) => naSemana(r.criadaEm)).length,
+      cozinhadas: feitos.length,
+      aproveitados: feitos.fold(0, (t, c) => t + c.aproveitados),
+      dias: [
+        for (var i = 6; i >= 0; i--)
+          feitos.any(
+            (c) =>
+                DateUtils.isSameDay(c.quando, hoje.subtract(Duration(days: i))),
+          ),
+      ],
+    );
+  }
+
   /// Quantos ingredientes da receita (fora os básicos) o usuário tem: (tem, total).
   (int, int) cobertura(Receita r) {
     final principais = r.ingredientes.where(

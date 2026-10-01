@@ -159,7 +159,13 @@ void main() {
       expect(find.text('HOJE'), findsOneWidget);
       await tester.tap(aba('Perfil'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('1 / $limiteDiario usados'),
+        200,
+        scrollable: rolagem(PerfilTela),
+      );
       expect(find.text('1 / $limiteDiario usados'), findsOneWidget);
+      expect(find.text('Sua semana'), findsOneWidget);
 
       // Sair volta para o login.
       await rolarAteOFim(tester, PerfilTela);

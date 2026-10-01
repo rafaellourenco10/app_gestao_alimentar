@@ -220,4 +220,27 @@ void main() {
     expect(r2.achados.single.$2, '2 un');
     expect(r2.naoEntendidos, ['xyzabc']);
   });
+
+  test('resumo da semana conta só os últimos 7 dias', () async {
+    var hoje = DateTime(2026, 10, 1, 10);
+    d.agora = () => hoje;
+    await d.adicionarItem(d.alimento(489), '6 un');
+    final antigas = await d.gerarCardapio(); // 1º/out
+    await d.registrarCozinhado(antigas.first, {489: '4 un'});
+    hoje = DateTime(
+      2026,
+      10,
+      9,
+      10,
+    ); // 8 dias depois: a anterior saiu da semana
+    final novas = await d.gerarCardapio();
+    await d.registrarCozinhado(novas.first, {489: '2 un'});
+    hoje = DateTime(2026, 10, 11, 20);
+    await d.registrarCozinhado(novas[2], {489: null});
+    final r = d.resumoSemana;
+    expect(r.geradas, 3);
+    expect(r.cozinhadas, 2);
+    expect(r.aproveitados, 2);
+    expect(r.dias, [false, false, false, false, true, false, true]);
+  });
 }

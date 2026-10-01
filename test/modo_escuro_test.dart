@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nutricasa/dados.dart';
 import 'package:nutricasa/main.dart';
 import 'package:nutricasa/tema.dart';
+import 'package:nutricasa/telas/perfil_tela.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -28,7 +29,16 @@ void main() {
     final abas = find.byType(NavigationBar);
     await tester.tap(find.descendant(of: abas, matching: find.text('Perfil')));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Escuro'));
+    await tester.scrollUntilVisible(
+      find.text('Escuro'),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(PerfilTela),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     await tester.tap(find.text('Escuro'));
     await tester.pumpAndSettle();
     expect(Cores.escuro, isTrue);
