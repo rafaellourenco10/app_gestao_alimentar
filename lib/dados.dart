@@ -12,6 +12,9 @@ const limiteDiario = 5;
 /// Básicos que a receita pode usar mesmo fora da despensa (sal, óleo, azeite).
 const basicos = {517, 272, 260};
 
+/// Sugestões rápidas da busca vazia, na ordem em que aparecem.
+const sugestoesRapidas = [489, 157, 107, 82, 4, 562, 409, 182, 92, 110, 53, 458, 461, 40, 327];
+
 class Alimento {
   const Alimento({
     required this.id,
@@ -22,6 +25,8 @@ class Alimento {
     required this.carbo,
     required this.gordura,
     required this.fibra,
+    this.curto,
+    this.emoji,
   });
 
   factory Alimento.fromJson(Map<String, dynamic> j) => Alimento(
@@ -33,6 +38,8 @@ class Alimento {
         carbo: (j['carbo'] as num).toDouble(),
         gordura: (j['gordura'] as num).toDouble(),
         fibra: (j['fibra'] as num).toDouble(),
+        curto: j['curto'] as String?,
+        emoji: j['emoji'] as String?,
       );
 
   final int id;
@@ -41,6 +48,12 @@ class Alimento {
 
   /// Valores por 100 g (Tabela TACO).
   final double kcal, proteina, carbo, gordura, fibra;
+
+  /// Nome amigável e emoji dos ~200 alimentos mais comuns (null nos demais).
+  final String? curto;
+  final String? emoji;
+
+  String get nomeCurto => curto ?? nome;
 }
 
 class ItemDespensa {
@@ -123,21 +136,32 @@ class Dados extends ChangeNotifier {
 
   Alimento alimento(int id) => _porId[id]!;
 
-  /// Busca sem acento e sem diferenciar maiúsculas; quem começa com o termo vem primeiro.
+  /// Busca sem acento e sem diferenciar maiúsculas, no nome TACO e no nome curto.
+  /// Ordem: começa com o termo › alimentos comuns › resto; depois o nome mais curto.
   List<Alimento> buscar(String termo) {
     final palavras = normalizar(termo).split(' ').where((p) => p.isNotEmpty).toList();
     if (palavras.isEmpty) return const [];
+    int peso(Alimento a) {
+      final curto = normalizar(a.curto ?? '');
+      if (curto.startsWith(palavras.first)) return 0;
+      if (normalizar(a.nome).startsWith(palavras.first)) return a.curto != null ? 1 : 2;
+      return a.curto != null ? 3 : 4;
+    }
+
     final achados = _alimentos.where((a) {
-      final nome = normalizar(a.nome);
-      return palavras.every(nome.contains);
+      final texto = normalizar('${a.nome} ${a.curto ?? ''}');
+      return palavras.every(texto.contains);
     }).toList()
       ..sort((a, b) {
-        final ia = normalizar(a.nome).startsWith(palavras.first) ? 0 : 1;
-        final ib = normalizar(b.nome).startsWith(palavras.first) ? 0 : 1;
-        return ia != ib ? ia - ib : a.nome.length - b.nome.length;
+        final p = peso(a) - peso(b);
+        return p != 0 ? p : a.nomeCurto.length - b.nomeCurto.length;
       });
     return achados.take(20).toList();
   }
+
+  /// Sugestões rápidas que ainda não estão na despensa.
+  List<Alimento> get sugestoes =>
+      [for (final id in sugestoesRapidas) if (!temNaDespensa(id)) alimento(id)].take(5).toList();
 
   // ---------- Conta (Fase 2: Supabase Auth) ----------
 
@@ -171,6 +195,12 @@ class Dados extends ChangeNotifier {
   // ---------- Receitas ----------
 
   List<Receita> get favoritas => receitas.where((r) => r.favorita).toList();
+
+  /// Quantos ingredientes da receita (fora os básicos) o usuário tem: (tem, total).
+  (int, int) cobertura(Receita r) {
+    final principais = r.ingredientes.where((i) => !basicos.contains(i.alimento.id));
+    return (principais.where((i) => temNaDespensa(i.alimento.id)).length, principais.length);
+  }
 
   int get geracoesRestantes {
     final hoje = agora();

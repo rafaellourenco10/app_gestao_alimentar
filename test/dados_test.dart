@@ -21,6 +21,17 @@ void main() {
     expect(d.buscar('ovo galinha').map((a) => a.id), contains(489));
     expect(d.buscar('banana').first.nome, startsWith('Banana'));
     expect(d.buscar('   '), isEmpty);
+    // nome curto: "mussarela" acha a "Queijo, mozarela" da TACO; comuns vêm antes
+    expect(d.buscar('mussarela').first.id, 463);
+    expect(d.buscar('peito de frango').first.id, 409);
+    expect(d.buscar('ovo').first.nomeCurto, 'Ovo');
+  });
+
+  test('sugestões rápidas pulam o que já está na despensa', () async {
+    expect(d.sugestoes.first.id, 489);
+    await d.adicionarItem(d.alimento(489), null);
+    expect(d.sugestoes.map((a) => a.id), isNot(contains(489)));
+    expect(d.sugestoes.length, 5);
   });
 
   test('macros por porção = soma(gramas × valor/100) ÷ porções', () {
