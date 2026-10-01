@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { width: 100vw; margin: 0; padding: 0; background-color: #f4faff; } body { overscroll-behavior: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#a3f69c", "tertiary-container": "#85675c", "error-container": "#ffdad6", "on-background": "#111d23", "on-secondary-container": "#623300", "surface-bright": "#f4faff", "outline": "#707a6c", "on-tertiary-fixed-variant": "#5b4137", "surface-container-highest": "#d7e4ec", "tertiary-fixed-dim": "#e4beb2", "on-secondary": "#ffffff", "on-surface": "#111d23", "on-primary-container": "#cbffc2", "secondary-fixed-dim": "#ffb77b", "tertiary": "#6b4f45", "outline-variant": "#bfcaba", "surface-container-low": "#e9f6fd", "surface-container-lowest": "#ffffff", "error": "#ba1a1a", "on-tertiary": "#ffffff", "surface-container": "#e3f0f8", "inverse-primary": "#88d982", "primary": "#0d631b", "on-tertiary-container": "#ffeee8", "on-secondary-fixed-variant": "#6d3a00", "surface-variant": "#d7e4ec", "on-surface-variant": "#40493d", "surface-dim": "#cfdce4", "primary-fixed-dim": "#88d982", "on-primary": "#ffffff", "secondary": "#8f4e00", "on-primary-fixed": "#002204", "background": "#f4faff", "tertiary-fixed": "#ffdbce", "on-tertiary-fixed": "#2b160f", "secondary-container": "#ff8f06", "surface-container-high": "#ddeaf2", "on-secondary-fixed": "#2e1500", "secondary-fixed": "#ffdcc2", "on-error": "#ffffff", "surface": "#f4faff", "on-error-container": "#93000a", "inverse-surface": "#263238", "on-primary-fixed-variant": "#005312", "inverse-on-surface": "#e6f3fb", "primary-container": "#2e7d32", "surface-tint": "#1b6d24" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-xl": "2rem", "margin": "1.25rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem" }, fontFamily: { "headline-lg": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"] }, fontSize: { "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }], "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }], "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }], "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }], "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "headline-xl-mobile": ["26px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.03em", fontWeight: "700" }], "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }], "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="NutriCasa Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANh2M9im8NR4mwwI8UtNqivXnePQ4DNzQA_bz4kw4_IQFyg0tmMFSH_B11676ZnIYh_ZyhDzlREOFWJBlG0rvv7DwvCAfUNlomCCFDvN8rm1LSR24_hgbkGC3ptliVWjhfXQCpIzxrunUMOQrn3gL---tJpKONDxVK7yTPB36mHsv25ksdmkfFHwAofO1n0Kp1631YmOCpMqaVZpMOZmSRZoUsx1Bh7rX5-nGsNbVWmGcSo_5NWfiE"/><div class="flex flex-col"><span class="font-label-md text-label-md text-primary font-bold tracking-tight leading-none">NutriCasa</span><span class="font-headline-sm text-headline-sm text-on-surface leading-tight truncate max-w-[170px]">Despensa</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notificações" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[24px]">notifications</span></button><a class="w-11 h-11 flex items-center justify-center rounded-full hover:opacity-90 transition-opacity" data-path="perfil" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpLl9JCVKygQt3BniP5PwYQd90Kq90b5DC8X16oT98NQHuXCdNisMp_EMBJtTCBkXB_nPi4emAMxomB9q_ABWHzGxOib4BKZezJHPFgWAGj1QA9zmk1Rnk5f5Qy5eEYRzb7ZFGmTfZ0xx8667aZTcuxIf9Who4DolFPaVPSe5N07G7LnO9dT1b5TSAdwVCcL87wajA0mZPbQcgffCA9oiePkuJpFwXN0kzXtm6AxMFBvOi5TdI8uqs"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full pb-32">
+<!-- Top Greeting & Pantry Summary Banner -->
+<section class="px-margin pt-space-md pb-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-wider text-primary font-bold block mb-0.5">Visão Geral</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Minha despensa</h1>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[16px]">eco</span>
+<span class="font-label-sm text-label-sm font-bold" id="item-counter">14 alimentos</span>
+</div>
+</div>
+<!-- Quick Zero-waste Micro Insight Card -->
+<div class="p-space-md rounded-2xl bg-surface-container-low flex items-center justify-between shadow-sm relative overflow-hidden">
+<div class="flex items-center gap-3 z-10">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[22px]">tips_and_updates</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Tudo fresco e aproveitável!</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Suficiente para até 6 receitas sugeridas.</span>
+</div>
+</div>
+<div class="absolute -right-2 -bottom-2 opacity-15 pointer-events-none">
+<span class="material-symbols-outlined text-[72px] text-primary">lunch_dining</span>
+</div>
+</div>
+</section>
+<!-- Interactive Search / Quick-Add Bar with Live Dropdown Preview -->
+<section class="px-margin py-space-xs relative z-30">
+<div class="relative flex items-center">
+<div class="absolute left-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-13 pl-11 pr-12 rounded-2xl bg-surface-container-lowest text-on-surface font-body-md shadow-sm outline-none placeholder:text-on-surface-variant/70 focus:shadow-md transition-shadow" id="pantry-search-input" placeholder="Adicionar alimento… (ex: ovo, tomate)" type="text"/>
+<button aria-label="Escanear código de barras" class="absolute right-2 w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" id="barcode-btn">
+<span class="material-symbols-outlined text-[20px]">barcode_scanner</span>
+</button>
+</div>
+<!-- Floating Autocomplete / Suggestions Card -->
+<div class="mt-2 w-full bg-surface-container-lowest rounded-2xl shadow-xl overflow-hidden p-2 flex flex-col gap-1 transition-all duration-200" id="autocomplete-dropdown">
+<div class="px-3 py-1 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider flex items-center justify-between">
+<span>Sugestões rápidas da feira</span>
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+</div>
+<button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-surface-container-low transition-colors text-left group" onclick="addSuggestedItem('Tomate cereja', '🍅', '1 bandeja', 'verduras')" type="button">
+<div class="flex items-center gap-2.5">
+<span class="text-xl">🍅</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Tomate cereja</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Hortifrúti fresquinho</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm flex items-center gap-1 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[14px]">add</span> Adicionar
+        </span>
+</button>
+<button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-surface-container-low transition-colors text-left group" onclick="addSuggestedItem('Cebola roxa', '🧅', '2 un', 'verduras')" type="button">
+<div class="flex items-center gap-2.5">
+<span class="text-xl">🧅</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Cebola roxa</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Ideal para saladas e refogados</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm flex items-center gap-1 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[14px]">add</span> Adicionar
+        </span>
+</button>
+<button class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-surface-container-low transition-colors text-left group" onclick="addSuggestedItem('Abacate', '🥑', '1 un', 'frutas')" type="button">
+<div class="flex items-center gap-2.5">
+<span class="text-xl">🥑</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Abacate</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Rico em gorduras boas</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm flex items-center gap-1 group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[14px]">add</span> Adicionar
+        </span>
+</button>
+</div>
+</section>
+<!-- Horizontal Scroll Filter Chips -->
+<section class="mt-space-md pl-margin z-10 overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-2 pr-margin py-1" id="category-pills">
+<button class="category-btn active px-4 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md shadow-sm whitespace-nowrap transition-all flex items-center gap-1.5" onclick="filterCategory('todos', this)">
+<span>Todos</span>
+<span class="text-xs bg-white/20 rounded-full px-1.5 py-0.2">14</span>
+</button>
+<button class="category-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm whitespace-nowrap transition-all hover:bg-surface-container" onclick="filterCategory('verduras', this)">
+        Verduras e legumes
+      </button>
+<button class="category-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm whitespace-nowrap transition-all hover:bg-surface-container" onclick="filterCategory('proteinas', this)">
+        Proteínas
+      </button>
+<button class="category-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm whitespace-nowrap transition-all hover:bg-surface-container" onclick="filterCategory('graos', this)">
+        Grãos e pães
+      </button>
+<button class="category-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm whitespace-nowrap transition-all hover:bg-surface-container" onclick="filterCategory('laticinios', this)">
+        Laticínios
+      </button>
+<button class="category-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm whitespace-nowrap transition-all hover:bg-surface-container" onclick="filterCategory('frutas', this)">
+        Frutas
+      </button>
+</div>
+</section>
+<!-- Grouped Inventory List -->
+<section class="px-margin mt-space-md flex flex-col gap-5" id="pantry-groups">
+<!-- Category: Frutas -->
+<div class="category-block flex flex-col gap-2.5" data-category="frutas">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Frutas</span>
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3 itens</span>
+</div>
+<div class="flex flex-wrap gap-2.5">
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍌</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Banana</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(3 un)</span>
+</div>
+<button aria-label="Remover Banana" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍋</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Limão</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(2 un)</span>
+</div>
+<button aria-label="Remover Limão" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍎</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Maçã</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(4 un)</span>
+</div>
+<button aria-label="Remover Maçã" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Category: Verduras e legumes -->
+<div class="category-block flex flex-col gap-2.5" data-category="verduras">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Verduras e legumes</span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">4 itens</span>
+</div>
+<div class="flex flex-wrap gap-2.5">
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍅</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Tomate</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(3 un)</span>
+</div>
+<button aria-label="Remover Tomate" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🧅</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Cebola</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(1 un)</span>
+</div>
+<button aria-label="Remover Cebola" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🧄</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Alho</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(4 dentes)</span>
+</div>
+<button aria-label="Remover Alho" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🥕</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Cenoura</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(2 un)</span>
+</div>
+<button aria-label="Remover Cenoura" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Category: Proteínas -->
+<div class="category-block flex flex-col gap-2.5" data-category="proteinas">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Proteínas</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 itens</span>
+</div>
+<div class="flex flex-wrap gap-2.5">
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🥚</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Ovos</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(6 un)</span>
+</div>
+<button aria-label="Remover Ovos" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍗</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Peito de frango</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(500g)</span>
+</div>
+<button aria-label="Remover Peito de frango" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Category: Grãos e pães -->
+<div class="category-block flex flex-col gap-2.5" data-category="graos">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Grãos e pães</span>
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3 itens</span>
+</div>
+<div class="flex flex-wrap gap-2.5">
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍚</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Arroz integral</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(1 pacote)</span>
+</div>
+<button aria-label="Remover Arroz" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🍞</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Pão de forma</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(4 fatias)</span>
+</div>
+<button aria-label="Remover Pão" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🌾</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Aveia em flocos</span>
+</div>
+<button aria-label="Remover Aveia" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Category: Laticínios -->
+<div class="category-block flex flex-col gap-2.5" data-category="laticinios">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Laticínios</span>
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 itens</span>
+</div>
+<div class="flex flex-wrap gap-2.5">
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🧀</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Queijo minas</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(200g)</span>
+</div>
+<button aria-label="Remover Queijo" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+<div class="food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95">
+<span class="text-xl">🥛</span>
+<div class="flex items-baseline gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Leite integral</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(1L)</span>
+</div>
+<button aria-label="Remover Leite" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1" onclick="removeChip(this)">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Delight Hint -->
+<section class="px-margin mt-space-lg">
+<div class="p-space-md rounded-2xl bg-surface-container flex items-center gap-space-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[24px]">soup_kitchen</span>
+<p class="font-body-sm text-body-sm">
+        Dica NutriCasa: clique em <strong class="text-on-surface font-semibold">Gerar cardápio</strong> para combinar estes alimentos em receitas saborosas sem desperdício!
+      </p>
+</div>
+</section>
+<!-- Sticky Bottom Trigger Section (Fixed above Bottom Navigation) -->
+<div class="fixed bottom-20 left-0 right-0 z-40 px-margin flex flex-col items-center pointer-events-none">
+<!-- Subtle gradient backing behind floating CTA -->
+<div class="w-full max-w-md flex flex-col items-center pointer-events-auto">
+<!-- Daily limit counter badge with warm glow -->
+<div class="mb-2 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md shadow-sm border-0 flex items-center gap-1.5 transition-transform hover:scale-105">
+<span class="material-symbols-outlined text-[16px] text-secondary-container animate-pulse">auto_awesome</span>
+<span class="font-label-md text-label-md text-secondary font-bold tracking-tight">
+          ✨ 5 gerações restantes hoje
+        </span>
+</div>
+<!-- Main Floating Action Button -->
+<button class="w-full h-14 rounded-full bg-secondary-container hover:bg-secondary text-on-secondary font-headline-sm text-headline-sm shadow-[0_8px_24px_rgba(255,143,6,0.38)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-bold tracking-wide" id="btn-generate-menu" onclick="triggerGenerateFeedback(this)">
+<span class="material-symbols-outlined text-[24px]">magic_button</span>
+<span>✨ Gerar cardápio</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Autocomplete toggle on input interaction
+  const searchInput = document.getElementById('pantry-search-input');
+  const dropdown = document.getElementById('autocomplete-dropdown');
+
+  searchInput.addEventListener('focus', () => {
+    dropdown.classList.remove('hidden');
+  });
+
+  // Filter Categories
+  function filterCategory(categoryKey, clickedBtn) {
+    const buttons = document.querySelectorAll('.category-btn');
+    buttons.forEach(btn => {
+      btn.classList.remove('bg-primary-container', 'text-on-primary');
+      btn.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+    });
+
+    clickedBtn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+    clickedBtn.classList.add('bg-primary-container', 'text-on-primary');
+
+    const blocks = document.querySelectorAll('.category-block');
+    blocks.forEach(block => {
+      if (categoryKey === 'todos' || block.getAttribute('data-category') === categoryKey) {
+        block.classList.remove('hidden');
+      } else {
+        block.classList.add('hidden');
+      }
+    });
+  }
+
+  // Remove individual food chips with gentle fade
+  function removeChip(btnElement) {
+    const chip = btnElement.closest('.food-chip');
+    chip.style.transition = 'all 0.2s ease-out';
+    chip.style.transform = 'scale(0.8)';
+    chip.style.opacity = '0';
+    setTimeout(() => {
+      chip.remove();
+      updatePantryCount();
+    }, 200);
+  }
+
+  // Quick Add Suggested Item
+  function addSuggestedItem(name, emoji, measure, categoryKey) {
+    const targetCategory = document.querySelector(`.category-block[data-category="${categoryKey}"] .flex-wrap`);
+    if (targetCategory) {
+      const newChip = document.createElement('div');
+      newChip.className = 'food-chip inline-flex items-center gap-2 pl-3 pr-2 py-2 rounded-2xl bg-surface-container-lowest shadow-sm transition-transform active:scale-95 animate-in fade-in zoom-in-95 duration-200';
+      newChip.innerHTML = `
+        <span class="text-xl">${emoji}</span>
+        <div class="flex items-baseline gap-1">
+          <span class="font-label-lg text-label-lg text-on-surface font-semibold">${name}</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant">(${measure})</span>
+        </div>
+        <button onclick="removeChip(this)" aria-label="Remover ${name}" class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors ml-1">
+          <span class="material-symbols-outlined text-[15px]">close</span>
+        </button>
+      `;
+      targetCategory.appendChild(newChip);
+      updatePantryCount();
+      searchInput.value = '';
+    }
+  }
+
+  // Recalculate total pantry items badge
+  function updatePantryCount() {
+    const totalChips = document.querySelectorAll('.food-chip').length;
+    const counter = document.getElementById('item-counter');
+    if (counter) {
+      counter.textContent = `${totalChips} alimentos`;
+    }
+  }
+
+  // Click effect for generating cardápio
+  function triggerGenerateFeedback(btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-outlined text-[24px] animate-spin">refresh</span> <span>Criando seu menu...</span>`;
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 1400);
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-[24px]" data-active-classes="text-primary-container font-bold [&amp;&gt;div]:bg-on-primary-container [&amp;&gt;div]:px-5 [&amp;&gt;div]:py-1 [&amp;&gt;div]:rounded-full [&amp;&gt;span.material-symbols-outlined]:text-primary-container"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 transition-all text-primary-container font-bold [&amp;&gt;div]:bg-on-primary-container [&amp;&gt;div]:px-5 [&amp;&gt;div]:py-1 [&amp;&gt;div]:rounded-full [&amp;&gt;span.material-symbols-outlined]:text-primary-container" data-path="despensa" href="#"><div class="flex items-center justify-center transition-all"><span class="material-symbols-outlined text-[24px]">kitchen</span></div><span class="font-label-sm text-label-sm mt-0.5">Despensa</span></a><a class="flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-all" data-path="cardapios" href="#"><div class="flex items-center justify-center transition-all"><span class="material-symbols-outlined text-[24px]">menu_book</span></div><span class="font-label-sm text-label-sm mt-0.5">Cardápios</span></a><a class="flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-all" data-path="favoritos" href="#"><div class="flex items-center justify-center transition-all"><span class="material-symbols-outlined text-[24px]">favorite</span></div><span class="font-label-sm text-label-sm mt-0.5">Favoritos</span></a><a class="flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-all" data-path="perfil" href="#"><div class="flex items-center justify-center transition-all"><span class="material-symbols-outlined text-[24px]">account_circle</span></div><span class="font-label-sm text-label-sm mt-0.5">Perfil</span></a></div></nav></body></html>
