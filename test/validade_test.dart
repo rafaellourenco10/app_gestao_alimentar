@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nutricasa/avisos.dart';
 import 'package:nutricasa/dados.dart';
 import 'package:nutricasa/main.dart';
 
@@ -52,5 +53,34 @@ void main() {
     await tester.tap(find.text('Salvar'));
     await tester.pumpAndSettle();
     expect(find.text('Vence amanhã'), findsNothing);
+  });
+
+  test('aviso de validade: véspera às 9h, senão no dia, senão nada', () {
+    final vence = DateTime(2026, 10, 5);
+    expect(quandoAvisar(vence, DateTime(2026, 10, 1)), (
+      DateTime(2026, 10, 4, 9),
+      'vence amanhã',
+    ));
+    expect(quandoAvisar(vence, DateTime(2026, 10, 4, 10)), (
+      DateTime(2026, 10, 5, 9),
+      'vence hoje',
+    ));
+    expect(quandoAvisar(vence, DateTime(2026, 10, 5, 9, 1)), isNull);
+    // virada de mês
+    expect(
+      quandoAvisar(DateTime(2026, 11, 1), DateTime(2026, 10, 30))?.$1,
+      DateTime(2026, 10, 31, 9),
+    );
+  });
+
+  test('despensa avisa quando a validade muda ou o item sai', () async {
+    final d = Dados();
+    await d.carregarAlimentos();
+    final avisos = <(int, DateTime?)>[];
+    d.aoMudarValidade = (a, v) => avisos.add((a.id, v));
+    final v = DateTime(2026, 10, 5);
+    await d.adicionarItem(d.alimento(157), null, validade: v);
+    await d.removerItem(157);
+    expect(avisos, [(157, v), (157, null)]);
   });
 }

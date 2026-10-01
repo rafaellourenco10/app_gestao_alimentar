@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^22.3.1
   flutter_localizations:
     sdk: flutter
   google_fonts: ^8.2.1
@@ -16,6 +17,7 @@ dependencies:
   share_plus: ^13.3.0
   shared_preferences: ^2.5.5
   speech_to_text: ^7.5.0
+  timezone: ^0.11.0
   wakelock_plus: ^1.8.1
 
 dev_dependencies:
@@ -51,3 +53,8 @@ flutter_native_splash:
     color: "#FAFAF7"
     color_dark: "#121614"
     image: assets/logo.png
+
+# ponytail: flutter_local_notifications_linux pede dbus 0.7 e wakelock_plus pede 0.8;
+# o app só roda em Android/iOS, então o lado Linux não importa. Tirar quando alinharem.
+dependency_overrides:
+  dbus: ^0.8.0

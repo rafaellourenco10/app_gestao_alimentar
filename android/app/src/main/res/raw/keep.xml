@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- O ícone da notificação só é citado no Dart; sem isto o build de release o remove. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/ic_notificacao" />

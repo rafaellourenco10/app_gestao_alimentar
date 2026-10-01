@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'avisos.dart';
 import 'dados.dart';
 import 'tema.dart';
 import 'telas/boas_vindas_tela.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dados.carregarAlimentos();
   await dados.carregarPreferencias();
+  await iniciarAvisos();
 
   // Relatório de erros: só liga com a chave (flutter run --dart-define=SENTRY_DSN=...).
   const dsn = String.fromEnvironment('SENTRY_DSN');

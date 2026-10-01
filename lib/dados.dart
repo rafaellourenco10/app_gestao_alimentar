@@ -176,6 +176,10 @@ class Dados extends ChangeNotifier {
   String alergias = '';
   int? metaKcal; // por dia
 
+  /// Chamado quando a validade de um item muda (null = saiu da despensa).
+  /// O main liga isso aos avisos do celular; nos testes não faz nada.
+  void Function(Alimento, DateTime?) aoMudarValidade = (_, _) {};
+
   /// Substituíveis nos testes.
   DateTime Function() agora = DateTime.now;
   Duration atrasoFalso = const Duration(seconds: 2);
@@ -298,6 +302,7 @@ class Dados extends ChangeNotifier {
           validade: validade,
         ),
       );
+    aoMudarValidade(alimento, validade);
     notifyListeners();
   }
 
@@ -315,7 +320,11 @@ class Dados extends ChangeNotifier {
         ..sort((a, b) => diasParaVencer(a)!.compareTo(diasParaVencer(b)!));
 
   Future<void> removerItem(int alimentoId) async {
-    despensa.removeWhere((i) => i.alimento.id == alimentoId);
+    despensa.removeWhere((i) {
+      if (i.alimento.id != alimentoId) return false;
+      aoMudarValidade(i.alimento, null);
+      return true;
+    });
     notifyListeners();
   }
 
@@ -445,7 +454,7 @@ class Dados extends ChangeNotifier {
       final i = despensa.indexWhere((x) => x.alimento.id == id);
       if (i < 0) continue;
       if (qtd == null) {
-        despensa.removeAt(i);
+        aoMudarValidade(despensa.removeAt(i).alimento, null);
       } else {
         final limpa = qtd.trim();
         despensa[i] = ItemDespensa(
