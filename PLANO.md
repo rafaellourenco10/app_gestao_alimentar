@@ -145,6 +145,19 @@ Cada fase termina com algo funcionando que dá para testar.
 
 **Pronto quando:** dá para fazer o fluxo inteiro no celular (adicionar alimentos, gerar, abrir a receita, favoritar) sem internet.
 
+### Fase 1.5: Melhorias de experiência (pedido do usuário, antes do Supabase)
+- [ ] Ajustar porções (recalcula quantidades)
+- [ ] Modo cozinhar: passo a passo em tela cheia, tela sempre acesa, timer por etapa
+- [ ] "Cozinhei!": desconta da despensa o que foi usado
+- [ ] Validade dos alimentos (aviso de vencimento)
+- [ ] Lista de compras (o que falta na receita + manual, compartilhar no WhatsApp)
+- [ ] Adicionar alimentos por voz
+- [ ] Boas-vindas na primeira abertura
+- [ ] Compartilhar receita como imagem
+- [ ] Modo escuro
+- [ ] Resumo da semana (dados reais)
+- [ ] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
+
 ### Fase 2: Supabase (3–5 dias)
 - [ ] Criar o projeto no Supabase e pegar a URL e a anon key
 - [ ] Importar a TACO completa em `alimentos` (os valores "Tr" e "NA" viram 0 ou null)
