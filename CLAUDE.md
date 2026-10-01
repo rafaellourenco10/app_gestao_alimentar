@@ -9,6 +9,7 @@
 - UI em português do Brasil.
 - Commit **a cada progresso** (`flutter analyze` + `flutter test` limpos), sem perguntar. **Push só quando o usuário pedir.**
 - O usuário testa no próprio celular (`flutter run`); não usar emulador.
+- Novas ideias: mandar **lista numerada** de possíveis alterações → o usuário escolhe os números → registrar no PLANO.md → executar uma tarefa por vez, com commit ao fim de cada uma → resumo final; push só se ele pedir.
 
 ## graphify
 
