@@ -163,7 +163,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Ícone do app e tela de abertura com o logo do Stitch
 - [x] Fotos por tipo de prato no lugar dos emojis
 - [x] Política de privacidade completa (LGPD)
-- [ ] Testes automáticos no GitHub (Actions: analyze + test)
+- [x] Testes automáticos no GitHub (Actions: analyze + test)
 - [ ] Preferências alimentares (vegetariano, sem lactose/glúten, alergias, meta de calorias)
 - [ ] Notificação de validade (aviso no celular mesmo com o app fechado)
 - [ ] Plano da semana + lista de compras do que falta
