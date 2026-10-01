@@ -63,10 +63,10 @@ class NutriCasaApp extends StatelessWidget {
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         home: ListenableBuilder(
           listenable: dados,
-          builder: (context, _) => !dados.boasVindasVistas
-              ? const BoasVindasTela()
-              : dados.email == null
+          builder: (context, _) => dados.email == null
               ? const LoginTela()
+              : !dados.boasVindasVistas
+              ? const BoasVindasTela()
               : const Inicio(),
         ),
       ),

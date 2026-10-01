@@ -61,12 +61,6 @@ class _BoasVindasTelaState extends State<BoasVindasTela> {
                     'NutriCasa',
                     style: textos.titleMedium?.copyWith(color: Cores.primaria),
                   ),
-                  const Spacer(),
-                  if (!ultima)
-                    TextButton(
-                      onPressed: dados.concluirBoasVindas,
-                      child: const Text('Pular'),
-                    ),
                 ],
               ),
             ),
@@ -119,7 +113,7 @@ class _BoasVindasTelaState extends State<BoasVindasTela> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
               child: BotaoPrincipal(
                 texto: ultima ? 'Começar' : 'Próximo',
                 icone: ultima ? Icons.check : Icons.arrow_forward,
@@ -128,6 +122,19 @@ class _BoasVindasTelaState extends State<BoasVindasTela> {
                     : () => _paginas.nextPage(
                         duration: const Duration(milliseconds: 280),
                         curve: Curves.easeOutCubic,
+                      ),
+              ),
+            ),
+            // Mesma altura em todas as páginas, para o botão de cima não pular.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+              child: SizedBox(
+                height: 48,
+                child: ultima
+                    ? null
+                    : TextButton(
+                        onPressed: dados.concluirBoasVindas,
+                        child: const Text('Pular'),
                       ),
               ),
             ),

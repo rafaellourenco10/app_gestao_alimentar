@@ -20,16 +20,22 @@ void main() {
 
     await tester.pumpWidget(const NutriCasaApp());
     await tester.pumpAndSettle();
+    // Primeiro o login, depois a introdução.
+    await tester.enterText(find.byType(TextFormField).at(0), 'ana@exemplo.com');
+    await tester.enterText(find.byType(TextFormField).at(1), '123456');
+    await tester.tap(find.text('Entrar no NutriCasa'));
+    await tester.pumpAndSettle();
     expect(find.text('Cozinhe com o que você já tem'), findsOneWidget);
     await tester.tap(find.text('Próximo'));
     await tester.pumpAndSettle();
     expect(find.text('Cardápios criados pela IA'), findsOneWidget);
+    expect(find.text('Pular'), findsOneWidget);
     await tester.tap(find.text('Próximo'));
     await tester.pumpAndSettle();
     expect(find.text('Pular'), findsNothing);
     await tester.tap(find.text('Começar'));
     await tester.pumpAndSettle();
-    expect(find.text('Entrar no NutriCasa'), findsOneWidget);
+    expect(find.text('Despensa'), findsWidgets);
 
     // Na próxima abertura, não aparecem de novo.
     await dados.carregarPreferencias();
