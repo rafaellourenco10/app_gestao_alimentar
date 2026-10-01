@@ -44,6 +44,7 @@ flutter_launcher_icons:
   image_path: assets/icone.png
   adaptive_icon_background: "#FAFAF7"
   adaptive_icon_foreground: assets/logo.png
+  adaptive_icon_foreground_inset: 24
 
 flutter_native_splash:
   color: "#FAFAF7"
@@ -52,7 +53,8 @@ flutter_native_splash:
   android_12:
     color: "#FAFAF7"
     color_dark: "#121614"
-    image: assets/logo.png
+    # Android 12+ corta o ícone num círculo: esta versão tem margem para caber.
+    image: assets/splash_android12.png
 
 # ponytail: flutter_local_notifications_linux pede dbus 0.7 e wakelock_plus pede 0.8;
 # o app só roda em Android/iOS, então o lado Linux não importa. Tirar quando alinharem.
