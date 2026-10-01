@@ -25,22 +25,35 @@ Future<void> main() async {
 class NutriCasaApp extends StatelessWidget {
   const NutriCasaApp({super.key});
 
+  static final _claro = criarTema();
+  static final _escuro = criarTema(escuro: true);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NutriCasa',
-      debugShowCheckedModeBanner: false,
-      theme: criarTema(),
-      locale: const Locale('pt', 'BR'),
-      supportedLocales: const [Locale('pt', 'BR')],
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: ListenableBuilder(
-        listenable: dados,
-        builder: (context, _) => !dados.boasVindasVistas
-            ? const BoasVindasTela()
-            : dados.email == null
-            ? const LoginTela()
-            : const Inicio(),
+    return ListenableBuilder(
+      listenable: dados,
+      builder: (context, _) => MaterialApp(
+        title: 'NutriCasa',
+        debugShowCheckedModeBanner: false,
+        theme: _claro,
+        darkTheme: _escuro,
+        themeMode: dados.tema,
+        // As cores dos widgets (Cores.*) seguem o tema que está valendo.
+        builder: (context, filho) {
+          Cores.escuro = Theme.of(context).brightness == Brightness.dark;
+          return filho!;
+        },
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: const [Locale('pt', 'BR')],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        home: ListenableBuilder(
+          listenable: dados,
+          builder: (context, _) => !dados.boasVindasVistas
+              ? const BoasVindasTela()
+              : dados.email == null
+              ? const LoginTela()
+              : const Inicio(),
+        ),
       ),
     );
   }

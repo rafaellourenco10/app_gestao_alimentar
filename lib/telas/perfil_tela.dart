@@ -33,7 +33,7 @@ class PerfilTela extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: Sombras.card,
                 gradient: LinearGradient(
-                  colors: [Cores.branco, Color(0xFFEFFBEA)],
+                  colors: [Cores.branco, Cores.verdeNav.withValues(alpha: 0.6)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
@@ -142,6 +142,37 @@ class PerfilTela extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 28, 4, 10),
+              child: Text(
+                'APARÊNCIA',
+                style: textos.labelMedium?.copyWith(
+                  color: Cores.textoSuave,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+            SegmentedButton<ThemeMode>(
+              showSelectedIcon: false,
+              style: SegmentedButton.styleFrom(
+                selectedBackgroundColor: Cores.verdeNav,
+                selectedForegroundColor: Cores.primaria,
+                backgroundColor: Cores.branco,
+                foregroundColor: Cores.textoSuave,
+                side: BorderSide(color: Cores.superficie),
+              ),
+              segments: const [
+                ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text('Automático'),
+                ),
+                ButtonSegment(value: ThemeMode.light, label: Text('Claro')),
+                ButtonSegment(value: ThemeMode.dark, label: Text('Escuro')),
+              ],
+              selected: {dados.tema},
+              onSelectionChanged: (s) => dados.definirTema(s.first),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 28, 4, 10),

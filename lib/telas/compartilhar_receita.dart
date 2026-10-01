@@ -132,7 +132,7 @@ class CartaoReceita extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(6, 4, 10, 4),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.92),
+                    color: Cores.branco.withValues(alpha: 0.92),
                     borderRadius: BorderRadius.circular(99),
                   ),
                   child: Row(

@@ -170,6 +170,7 @@ class Dados extends ChangeNotifier {
   // Preferências guardadas no celular.
   SharedPreferences? _prefs;
   bool boasVindasVistas = false;
+  ThemeMode tema = ThemeMode.system;
 
   /// Substituíveis nos testes.
   DateTime Function() agora = DateTime.now;
@@ -223,6 +224,15 @@ class Dados extends ChangeNotifier {
   Future<void> carregarPreferencias() async {
     _prefs = await SharedPreferences.getInstance();
     boasVindasVistas = _prefs!.getBool('boasVindas') ?? false;
+    tema =
+        ThemeMode.values.asNameMap()[_prefs!.getString('tema')] ??
+        ThemeMode.system;
+  }
+
+  Future<void> definirTema(ThemeMode modo) async {
+    tema = modo;
+    notifyListeners();
+    await _prefs?.setString('tema', modo.name);
   }
 
   Future<void> concluirBoasVindas() async {

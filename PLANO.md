@@ -155,7 +155,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Adicionar alimentos por voz
 - [x] Boas-vindas na primeira abertura
 - [x] Compartilhar receita como imagem
-- [ ] Modo escuro
+- [x] Modo escuro
 - [ ] Resumo da semana (dados reais)
 - [ ] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
 

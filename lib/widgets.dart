@@ -430,7 +430,7 @@ class ImagemReceita extends StatelessWidget {
             child: Icon(
               Icons.eco,
               size: 120 * tamanho,
-              color: Colors.white.withValues(alpha: 0.35),
+              color: Colors.white.withValues(alpha: Cores.escuro ? 0.06 : 0.35),
             ),
           ),
           Positioned(
@@ -439,7 +439,7 @@ class ImagemReceita extends StatelessWidget {
             child: Icon(
               Icons.spa,
               size: 80 * tamanho,
-              color: Colors.white.withValues(alpha: 0.25),
+              color: Colors.white.withValues(alpha: Cores.escuro ? 0.05 : 0.25),
             ),
           ),
           Center(
@@ -643,7 +643,7 @@ class BotaoFavorito extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.92),
+          color: Cores.branco.withValues(alpha: 0.92),
           shape: BoxShape.circle,
           boxShadow: Sombras.leve,
         ),

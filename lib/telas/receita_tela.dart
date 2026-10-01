@@ -28,7 +28,9 @@ class _ReceitaTelaState extends State<ReceitaTela> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: Cores.escuro
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: Scaffold(
         body: ListenableBuilder(
           listenable: dados,
@@ -129,7 +131,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.92),
+        color: Cores.branco.withValues(alpha: 0.92),
         shape: BoxShape.circle,
         boxShadow: Sombras.media,
       ),
@@ -185,7 +187,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
                 child: Pilula(
                   tem == total ? '100% Despensa' : '$tem de $total na despensa',
                   icone: Icons.check_circle,
-                  fundo: Cores.primaria.withValues(alpha: 0.88),
+                  fundo: const Color(0xE00D631B),
                   cor: Colors.white,
                 ),
               ),
@@ -355,7 +357,7 @@ class _ReceitaTelaState extends State<ReceitaTela> {
         'Carboidratos',
         receita.carbo,
         receita.carbo * 4,
-        const Color(0xFF1B6D24),
+        Cores.escuro ? const Color(0xFF81C784) : const Color(0xFF1B6D24),
       ),
       ('Gorduras', receita.gordura, receita.gordura * 9, Cores.laranja),
     ];
