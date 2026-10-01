@@ -160,7 +160,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Relatório de erros (Sentry, ativado só com a chave `SENTRY_DSN`)
 
 ### Fase 1.6: Próximas melhorias (escolhidas em 01/10/2026)
-- [ ] Ícone do app e tela de abertura com o logo do Stitch
+- [x] Ícone do app e tela de abertura com o logo do Stitch
 - [ ] Fotos por tipo de prato no lugar dos emojis
 - [ ] Política de privacidade completa (LGPD)
 - [ ] Testes automáticos no GitHub (Actions: analyze + test)

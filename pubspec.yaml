@@ -22,9 +22,30 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
 
 flutter:
   uses-material-design: true
   assets:
     - assets/taco.json
     - assets/logo.png
+
+# Gerar ícone e abertura (rodar após trocar o logo):
+#   dart run flutter_launcher_icons && dart run flutter_native_splash:create
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: assets/icone.png
+  adaptive_icon_background: "#FAFAF7"
+  adaptive_icon_foreground: assets/logo.png
+
+flutter_native_splash:
+  color: "#FAFAF7"
+  color_dark: "#121614"
+  image: assets/logo.png
+  android_12:
+    color: "#FAFAF7"
+    color_dark: "#121614"
+    image: assets/logo.png
