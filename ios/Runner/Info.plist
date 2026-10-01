@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>O NutriCasa usa o microfone para você ditar os alimentos da sua despensa.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>O NutriCasa transforma o que você fala na lista de alimentos.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

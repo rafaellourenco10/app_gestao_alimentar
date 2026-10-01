@@ -591,3 +591,106 @@ int? minutosNoPasso(String passo) {
   if (resto <= 0.001) return (nova: null, acabou: true);
   return (nova: '${formatarNumero(resto)} $unidadeFinal'.trim(), acabou: false);
 }
+
+const _numerosFalados = {
+  'um': 1,
+  'uma': 1,
+  'dois': 2,
+  'duas': 2,
+  'tres': 3,
+  'quatro': 4,
+  'cinco': 5,
+  'seis': 6,
+  'sete': 7,
+  'oito': 8,
+  'nove': 9,
+  'dez': 10,
+  'doze': 12,
+  'meia': 0.5,
+  'meio': 0.5,
+};
+
+const _unidadesFaladas = {
+  'quilo': 'kg',
+  'quilos': 'kg',
+  'kg': 'kg',
+  'grama': 'g',
+  'gramas': 'g',
+  'g': 'g',
+  'litro': 'L',
+  'litros': 'L',
+  'pacote': 'pacote',
+  'pacotes': 'pacote',
+  'duzia': 'dúzia',
+  'duzias': 'dúzia',
+  'lata': 'lata',
+  'latas': 'lata',
+};
+
+/// Interpreta uma frase ditada ("6 ovos, tomates e um quilo de arroz") em alimentos da TACO.
+/// Devolve o que entendeu (com quantidade, se falada) e os trechos que não achou.
+({List<(Alimento, String?)> achados, List<String> naoEntendidos})
+interpretarFala(Dados d, String fala) {
+  final achados = <(Alimento, String?)>[];
+  final naoEntendidos = <String>[];
+  final trechos = normalizar(fala)
+      .split(RegExp(r',|;|\.|\s+e\s+|\s+mais\s+|\s+tambem\s+'))
+      .map((t) => t.trim())
+      .where((t) => t.isNotEmpty);
+
+  for (final trecho in trechos) {
+    var palavras = trecho.split(RegExp(r'\s+'));
+    num? numero;
+    String? unidade;
+    final n =
+        num.tryParse(palavras.first.replaceAll(',', '.')) ??
+        _numerosFalados[palavras.first];
+    if (n != null && palavras.length > 1) {
+      numero = n;
+      palavras = palavras.sublist(1);
+    }
+    if (palavras.length > 1 && _unidadesFaladas.containsKey(palavras.first)) {
+      unidade = _unidadesFaladas[palavras.first];
+      palavras = palavras.sublist(1);
+      if (palavras.length > 1 && palavras.first == 'de') {
+        palavras = palavras.sublist(1);
+      }
+    }
+    final nome = palavras.join(' ');
+    final alimento = _buscarFalado(d, nome);
+    if (alimento == null) {
+      naoEntendidos.add(trecho);
+      continue;
+    }
+    final qtd = numero == null
+        ? (unidade == null ? null : '1 $unidade')
+        : '${formatarNumero(numero.toDouble())} ${unidade ?? 'un'}';
+    achados.removeWhere((a) => a.$1.id == alimento.id);
+    achados.add((alimento, qtd));
+  }
+  return (achados: achados, naoEntendidos: naoEntendidos);
+}
+
+/// Busca tentando também o singular ("tomates" → "tomate", "pães" → "pão").
+Alimento? _buscarFalado(Dados d, String nome) {
+  final tentativas = <String>{
+    nome,
+    if (nome.endsWith('oes')) '${nome.substring(0, nome.length - 3)}ao',
+    if (nome.endsWith('aes')) '${nome.substring(0, nome.length - 3)}ao',
+    if (nome.endsWith('es')) nome.substring(0, nome.length - 2),
+    if (nome.endsWith('s')) nome.substring(0, nome.length - 1),
+  };
+  Alimento? reserva;
+  for (final t in tentativas) {
+    final r = d.buscar(t);
+    if (r.isEmpty) continue;
+    final a = r.first;
+    // Só aceita de cara quem começa com a palavra (evita "ovos" → "Maionese ... com ovos").
+    if (normalizar(a.nomeCurto).startsWith(t) ||
+        normalizar(a.nome).startsWith(t)) {
+      return a;
+    }
+    reserva ??= a;
+  }
+  return reserva;
+}

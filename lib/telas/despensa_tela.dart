@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../busca_alimento.dart';
 import '../dados.dart';
 import '../tema.dart';
+import '../voz_sheet.dart';
 import '../widgets.dart';
 import 'gerando_tela.dart';
 
@@ -15,6 +16,22 @@ class DespensaTela extends StatefulWidget {
 
 class _DespensaTelaState extends State<DespensaTela> {
   String? _filtro; // null = Todos
+
+  Future<void> _ditar() => mostrarVoz(
+    context,
+    aoConfirmar: (itens) async {
+      for (final (a, q) in itens) {
+        final atual = dados.despensa
+            .where((i) => i.alimento.id == a.id)
+            .firstOrNull;
+        await dados.adicionarItem(
+          a,
+          q ?? atual?.quantidade,
+          validade: atual?.validade,
+        );
+      }
+    },
+  );
 
   Future<void> _editar(Alimento a, {ItemDespensa? item}) async {
     final resposta = await showDialog<(String, DateTime?)>(
@@ -82,6 +99,7 @@ class _DespensaTelaState extends State<DespensaTela> {
                 _resumo(n),
                 const SizedBox(height: 12),
                 BuscaAlimento(
+                  aoFalar: _ditar,
                   aoEscolher: (a) => _editar(a),
                   jaTem: (a) => dados.temNaDespensa(a.id),
                   sugestoes: () => dados.sugestoes,

@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import '../busca_alimento.dart';
 import '../dados.dart';
 import '../tema.dart';
+import '../voz_sheet.dart';
 import '../widgets.dart';
 
 class ComprasTela extends StatelessWidget {
@@ -73,6 +74,15 @@ class ComprasTela extends StatelessWidget {
                         dados.compras.any((c) => c.alimento.id == a.id),
                     sugestoes: () => dados.sugestoes,
                     aoEscolher: (a) => dados.adicionarCompra(a, null),
+                    aoFalar: () => mostrarVoz(
+                      context,
+                      destino: 'lista',
+                      aoConfirmar: (itens) async {
+                        for (final (a, q) in itens) {
+                          await dados.adicionarCompra(a, q);
+                        }
+                      },
+                    ),
                   ),
                   if (dados.compras.isEmpty)
                     const Padding(

@@ -13,6 +13,7 @@ class BuscaAlimento extends StatefulWidget {
     required this.sugestoes,
     this.dica = 'Adicionar alimento… (ex: ovo, tomate)',
     this.textoJaTem = 'Na despensa',
+    this.aoFalar,
   });
 
   final Future<void> Function(Alimento) aoEscolher;
@@ -20,6 +21,9 @@ class BuscaAlimento extends StatefulWidget {
   final List<Alimento> Function() sugestoes;
   final String dica;
   final String textoJaTem;
+
+  /// Se informado, mostra o microfone para ditar alimentos.
+  final VoidCallback? aoFalar;
 
   @override
   State<BuscaAlimento> createState() => _BuscaAlimentoState();
@@ -59,6 +63,13 @@ class _BuscaAlimentoState extends State<BuscaAlimento> {
             decoration: InputDecoration(
               hintText: widget.dica,
               prefixIcon: const Icon(Icons.search, size: 20),
+              suffixIcon: widget.aoFalar == null
+                  ? null
+                  : IconButton(
+                      tooltip: 'Ditar alimentos',
+                      icon: const Icon(Icons.mic_none, color: Cores.verde),
+                      onPressed: widget.aoFalar,
+                    ),
               fillColor: Cores.branco,
               contentPadding: const EdgeInsets.symmetric(vertical: 16),
               border: OutlineInputBorder(

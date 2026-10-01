@@ -204,4 +204,20 @@ void main() {
       expect(d.compras.length, 2);
     },
   );
+
+  test('voz: frase ditada vira alimentos com quantidade', () {
+    final r = interpretarFala(
+      d,
+      '6 ovos, tomates e um quilo de arroz mais pães',
+    );
+    expect(
+      [for (final (a, q) in r.achados) '${a.nomeCurto}|$q'],
+      ['Ovo|6 un', 'Tomate|null', 'Arroz|1 kg', 'Pão francês|null'],
+    );
+    expect(r.naoEntendidos, isEmpty);
+    final r2 = interpretarFala(d, 'duas bananas e xyzabc');
+    expect(r2.achados.single.$1.nomeCurto, startsWith('Banana'));
+    expect(r2.achados.single.$2, '2 un');
+    expect(r2.naoEntendidos, ['xyzabc']);
+  });
 }
