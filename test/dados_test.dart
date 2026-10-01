@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutricasa/dados.dart';
 import 'package:nutricasa/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -271,5 +272,19 @@ void main() {
       fotoDe(com('Prato', ing: r.ingredientes)),
       'assets/fotos/frango.jpg',
     );
+  });
+
+  test('preferências alimentares ficam salvas no celular', () async {
+    SharedPreferences.setMockInitialValues({});
+    await d.carregarPreferencias();
+    await d.salvarPreferenciasAlimentares({'Vegano'}, ' amendoim ', 1800);
+    final outro = Dados();
+    await outro.carregarPreferencias();
+    expect(outro.restricoes, {'Vegano'});
+    expect(outro.alergias, 'amendoim');
+    expect(outro.metaKcal, 1800);
+    await outro.salvarPreferenciasAlimentares({}, '', null);
+    await d.carregarPreferencias();
+    expect(d.metaKcal, isNull);
   });
 }

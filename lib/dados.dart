@@ -171,6 +171,10 @@ class Dados extends ChangeNotifier {
   SharedPreferences? _prefs;
   bool boasVindasVistas = false;
   ThemeMode tema = ThemeMode.system;
+  // Preferências alimentares (Fase 3: vão junto no pedido ao Gemini).
+  Set<String> restricoes = {};
+  String alergias = '';
+  int? metaKcal; // por dia
 
   /// Substituíveis nos testes.
   DateTime Function() agora = DateTime.now;
@@ -227,6 +231,27 @@ class Dados extends ChangeNotifier {
     tema =
         ThemeMode.values.asNameMap()[_prefs!.getString('tema')] ??
         ThemeMode.system;
+    restricoes = {...?_prefs!.getStringList('restricoes')};
+    alergias = _prefs!.getString('alergias') ?? '';
+    metaKcal = _prefs!.getInt('metaKcal');
+  }
+
+  Future<void> salvarPreferenciasAlimentares(
+    Set<String> restricoes,
+    String alergias,
+    int? metaKcal,
+  ) async {
+    this.restricoes = restricoes;
+    this.alergias = alergias.trim();
+    this.metaKcal = metaKcal;
+    notifyListeners();
+    await _prefs?.setStringList('restricoes', restricoes.toList());
+    await _prefs?.setString('alergias', this.alergias);
+    if (metaKcal == null) {
+      await _prefs?.remove('metaKcal');
+    } else {
+      await _prefs?.setInt('metaKcal', metaKcal);
+    }
   }
 
   Future<void> definirTema(ThemeMode modo) async {

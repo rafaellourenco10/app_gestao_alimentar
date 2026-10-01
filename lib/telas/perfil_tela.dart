@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
+import 'preferencias_tela.dart';
 import 'privacidade_tela.dart';
 
 class PerfilTela extends StatelessWidget {
@@ -199,8 +200,12 @@ class PerfilTela extends StatelessWidget {
                     emoji: '🥗',
                     fundo: Cores.verdeNav,
                     titulo: 'Preferências alimentares',
-                    subtitulo: 'Dietas, restrições e alergias',
-                    emBreve: true,
+                    subtitulo: resumoPreferencias(),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PreferenciasTela(),
+                      ),
+                    ),
                   ),
                   const Divider(indent: 72, endIndent: 16),
                   _opcao(
@@ -375,7 +380,6 @@ class PerfilTela extends StatelessWidget {
     required Color fundo,
     required String titulo,
     required String subtitulo,
-    bool emBreve = false,
     VoidCallback? onTap,
   }) {
     final textos = Theme.of(context).textTheme;
@@ -413,10 +417,7 @@ class PerfilTela extends StatelessWidget {
                 ],
               ),
             ),
-            if (emBreve)
-              Pilula('Em breve', fundo: Cores.superficie, cor: Cores.textoSuave)
-            else
-              Icon(Icons.chevron_right, color: Cores.textoSuave),
+            Icon(Icons.chevron_right, color: Cores.textoSuave),
           ],
         ),
       ),
