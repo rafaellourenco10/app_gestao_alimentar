@@ -31,6 +31,7 @@ flutter:
     - assets/taco.json
     - assets/logo.png
     - assets/fotos/
+    - assets/privacidade.md
 
 # Gerar ícone e abertura (rodar após trocar o logo):
 #   dart run flutter_launcher_icons && dart run flutter_native_splash:create

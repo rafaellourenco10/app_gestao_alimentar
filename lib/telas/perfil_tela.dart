@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
+import 'privacidade_tela.dart';
 
 class PerfilTela extends StatelessWidget {
   const PerfilTela({super.key});
@@ -208,7 +209,11 @@ class PerfilTela extends StatelessWidget {
                     fundo: Cores.superficieBaixa,
                     titulo: 'Política de privacidade',
                     subtitulo: 'Como cuidamos dos seus dados',
-                    onTap: () => _privacidade(context),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const PrivacidadeTela(),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -414,28 +419,6 @@ class PerfilTela extends StatelessWidget {
               Icon(Icons.chevron_right, color: Cores.textoSuave),
           ],
         ),
-      ),
-    );
-  }
-
-  // ponytail: texto provisório; a política completa (LGPD) entra na Fase 4.
-  void _privacidade(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Política de privacidade'),
-        content: const Text(
-          'O NutriCasa guarda apenas seu e-mail, os alimentos da sua despensa e as '
-          'receitas geradas, para fazer o app funcionar. Para criar receitas, enviamos '
-          'somente os nomes e quantidades dos alimentos ao serviço de IA — nunca seus '
-          'dados pessoais.\n\nA versão completa estará disponível antes do lançamento.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Entendi'),
-          ),
-        ],
       ),
     );
   }
