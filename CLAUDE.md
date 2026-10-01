@@ -11,14 +11,8 @@
 - O usuário testa no próprio celular (`flutter run`); não usar emulador.
 - Novas ideias: mandar **lista numerada** de possíveis alterações → o usuário escolhe os números → registrar no PLANO.md → executar uma tarefa por vez, com commit ao fim de cada uma → resumo final; push só se ele pedir.
 
-## graphify
+## graphify (opcional)
 
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-On this machine the CLI is not on PATH: use `python -m graphify ...`.
-
-Rules:
-- For codebase questions, first run `python -m graphify query "<question>"` when graphify-out/graph.json exists. Use `python -m graphify path "<A>" "<B>"` for relationships and `python -m graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `python -m graphify update .` to keep the graph current (AST-only, no API cost).
+O grafo do código em `graphify-out/` é atualizado sozinho a cada commit (hook do git, sem custo de IA).
+Consultar só quando ajudar — ex.: projeto grande, "quem usa X?", "o que quebra se mudar Y?":
+`python -m graphify query "<pergunta>"` (o comando `graphify` não está no PATH desta máquina).
