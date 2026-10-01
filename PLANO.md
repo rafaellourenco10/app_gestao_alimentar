@@ -146,7 +146,7 @@ Cada fase termina com algo funcionando que dá para testar.
 **Pronto quando:** dá para fazer o fluxo inteiro no celular (adicionar alimentos, gerar, abrir a receita, favoritar) sem internet.
 
 ### Fase 1.5: Melhorias de experiência (pedido do usuário, antes do Supabase)
-- [ ] Ajustar porções (recalcula quantidades)
+- [x] Ajustar porções (recalcula quantidades)
 - [ ] Modo cozinhar: passo a passo em tela cheia, tela sempre acesa, timer por etapa
 - [ ] "Cozinhei!": desconta da despensa o que foi usado
 - [ ] Validade dos alimentos (aviso de vencimento)

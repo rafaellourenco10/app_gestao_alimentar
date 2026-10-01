@@ -370,3 +370,36 @@ const _acentos = {
 
 String normalizar(String s) =>
     s.toLowerCase().split('').map((c) => _acentos[c] ?? c).join();
+
+const _fracoes = {'½': 0.5, '¼': 0.25, '¾': 0.75, '⅓': 1 / 3, '⅔': 2 / 3};
+
+/// Multiplica a quantidade no começo da medida caseira: "2 ovos" ×2 → "4 ovos",
+/// "½ tomate" ×2 → "1 tomate", "1,5 xícara" ×2 → "3 xícara". Sem número, devolve igual.
+String escalarMedida(String medida, double fator) {
+  if (fator == 1) return medida;
+  final m = RegExp(
+    r'^(\d+(?:[.,]\d+)?)?\s*([½¼¾⅓⅔])?(\s*)',
+  ).firstMatch(medida)!;
+  if (m.group(1) == null && m.group(2) == null) return medida;
+  final valor =
+      (m.group(1) == null
+          ? 0
+          : double.parse(m.group(1)!.replaceAll(',', '.'))) +
+      (m.group(2) == null ? 0 : _fracoes[m.group(2)]!);
+  return '${formatarNumero(valor * fator)} ${medida.substring(m.end)}'
+      .trimRight();
+}
+
+/// 2.0 → "2", 1.5 → "1½", 0.25 → "¼", 2.4 → "2,4".
+String formatarNumero(double v) {
+  final inteiro = v.floor();
+  final resto = v - inteiro;
+  for (final MapEntry(key: simbolo, value: f) in _fracoes.entries) {
+    if ((resto - f).abs() < 0.02) {
+      return inteiro == 0 ? simbolo : '$inteiro$simbolo';
+    }
+  }
+  if (resto < 0.02) return '$inteiro';
+  if (resto > 0.98) return '${inteiro + 1}';
+  return v.toStringAsFixed(1).replaceAll('.', ',');
+}

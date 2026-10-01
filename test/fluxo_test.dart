@@ -84,6 +84,13 @@ void main() {
       await tester.tap(find.text('Omelete de tomate com queijo minas'));
       await tester.pumpAndSettle();
       expect(find.text('Tabela nutricional'), findsOneWidget);
+      expect(find.text('2 ovos'), findsOneWidget);
+      await tester.tap(find.byTooltip('Mais porções'));
+      await tester.pump();
+      expect(find.text('2 porções'), findsOneWidget);
+      expect(find.text('4 ovos'), findsOneWidget);
+      await tester.tap(find.byTooltip('Menos porções'));
+      await tester.pump();
       await mostrar(tester, 'Salvar nos favoritos', ReceitaTela);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Salvar nos favoritos'));

@@ -83,4 +83,22 @@ void main() {
     await d.removerItem(489);
     expect(d.despensa, isEmpty);
   });
+
+  test('escalar medida caseira para outras porções', () {
+    expect(escalarMedida('2 ovos', 2), '4 ovos');
+    expect(escalarMedida('½ tomate picado', 2), '1 tomate picado');
+    expect(
+      escalarMedida('1 filé de peito de frango', 1.5),
+      '1½ filé de peito de frango',
+    );
+    expect(escalarMedida('1,5 xícara de leite', 2), '3 xícara de leite');
+    expect(
+      escalarMedida('3 colheres de sopa de aveia', 1 / 3),
+      '1 colheres de sopa de aveia',
+    );
+    expect(escalarMedida('Sal a gosto', 3), 'Sal a gosto');
+    expect(escalarMedida('2 ovos', 1), '2 ovos');
+    expect(formatarNumero(2.4), '2,4');
+    expect(formatarNumero(0.25), '¼');
+  });
 }

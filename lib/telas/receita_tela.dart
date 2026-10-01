@@ -5,10 +5,21 @@ import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
 
-class ReceitaTela extends StatelessWidget {
+class ReceitaTela extends StatefulWidget {
   const ReceitaTela(this.receita, {super.key});
 
   final Receita receita;
+
+  @override
+  State<ReceitaTela> createState() => _ReceitaTelaState();
+}
+
+class _ReceitaTelaState extends State<ReceitaTela> {
+  Receita get receita => widget.receita;
+
+  /// Porções escolhidas na tela; as quantidades dos ingredientes acompanham.
+  late int _porcoes = receita.porcoes;
+  double get _fator => _porcoes / receita.porcoes;
 
   @override
   Widget build(BuildContext context) {
@@ -198,17 +209,58 @@ class ReceitaTela extends StatelessWidget {
                 Cores.primaria,
                 '${receita.tempoMin} minutos',
               ),
-              meta(
-                Icons.restaurant,
-                Cores.laranjaTexto,
-                '${receita.porcoes} ${receita.porcoes == 1 ? 'porção' : 'porções'}',
-              ),
+              _seletorPorcoes(textos),
               meta(
                 Icons.bolt,
                 Cores.verde,
                 'Nível ${receita.dificuldade.toLowerCase()}',
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _seletorPorcoes(TextTheme textos) {
+    Widget botao(IconData icone, String dica, VoidCallback? onTap) => SizedBox(
+      width: 28,
+      height: 28,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        tooltip: dica,
+        style: IconButton.styleFrom(backgroundColor: Cores.branco),
+        onPressed: onTap,
+        icon: Icon(icone, size: 16, color: Cores.laranjaTexto),
+      ),
+    );
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Cores.superficieBaixa,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.restaurant, size: 18, color: Cores.laranjaTexto),
+          const SizedBox(width: 4),
+          botao(
+            Icons.remove,
+            'Menos porções',
+            _porcoes > 1 ? () => setState(() => _porcoes--) : null,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              '$_porcoes ${_porcoes == 1 ? 'porção' : 'porções'}',
+              style: textos.labelMedium?.copyWith(color: Cores.textoSuave),
+            ),
+          ),
+          botao(
+            Icons.add,
+            'Mais porções',
+            _porcoes < 20 ? () => setState(() => _porcoes++) : null,
           ),
         ],
       ),
@@ -340,9 +392,9 @@ class ReceitaTela extends StatelessWidget {
         Dica(
           icone: Icons.eco_outlined,
           corIcone: Cores.primaria,
-          texto: receita.porcoes == 1
+          texto: _porcoes == 1
               ? '$insight Valores por porção.'
-              : '$insight Valores por porção — a receita rende ${receita.porcoes}.',
+              : '$insight Valores por porção — rendendo $_porcoes porções.',
         ),
       ],
     );
@@ -424,9 +476,9 @@ class ReceitaTela extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(i.medida, style: textos.bodyMedium),
+                Text(escalarMedida(i.medida, _fator), style: textos.bodyMedium),
                 Text(
-                  '${emojiDe(i.alimento)} ${i.alimento.nomeCurto} · ${i.gramas.round()} g',
+                  '${emojiDe(i.alimento)} ${i.alimento.nomeCurto} · ${(i.gramas * _fator).round()} g',
                   style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
                 ),
               ],
