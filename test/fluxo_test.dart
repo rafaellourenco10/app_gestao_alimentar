@@ -4,10 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nutricasa/dados.dart';
 import 'package:nutricasa/main.dart';
 import 'package:nutricasa/telas/cardapio_tela.dart';
+import 'package:nutricasa/telas/cozinhar_tela.dart';
 import 'package:nutricasa/telas/perfil_tela.dart';
 import 'package:nutricasa/telas/receita_tela.dart';
 
 void main() {
+  testarTimer();
   testWidgets(
     'fluxo completo num celular pequeno: login → despensa → cardápio → receita',
     (tester) async {
@@ -91,6 +93,26 @@ void main() {
       expect(find.text('4 ovos'), findsOneWidget);
       await tester.tap(find.byTooltip('Menos porções'));
       await tester.pump();
+
+      // Modo cozinhar: ingredientes → passos → voltar → sair.
+      await tester.tap(find.text('Começar a cozinhar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Separe os ingredientes'), findsOneWidget);
+      foraDasBarras(tester, find.text('Começar'));
+      await tester.tap(find.text('Começar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Passo 1 de 4'), findsOneWidget);
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.text('Próximo passo'));
+        await tester.pumpAndSettle();
+      }
+      expect(find.text('Terminei!'), findsOneWidget);
+      await tester.tap(find.byTooltip('Passo anterior'));
+      await tester.pumpAndSettle();
+      expect(find.text('Passo 3 de 4'), findsOneWidget);
+      await tester.tap(find.byTooltip('Sair do modo cozinhar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Tabela nutricional'), findsOneWidget);
       await mostrar(tester, 'Salvar nos favoritos', ReceitaTela);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Salvar nos favoritos'));
@@ -127,6 +149,35 @@ void main() {
       expect(find.text('Entrar no NutriCasa'), findsOneWidget);
     },
   );
+}
+
+void testarTimer() {
+  testWidgets('modo cozinhar: timer do passo avisa quando acaba', (
+    tester,
+  ) async {
+    GoogleFonts.config.allowRuntimeFetching = false;
+    await tester.runAsync(dados.carregarAlimentos);
+    final receita = Receita(
+      id: 't',
+      titulo: 'Panqueca',
+      tipo: 'lanche',
+      tempoMin: 10,
+      porcoes: 1,
+      dificuldade: 'Fácil',
+      criadaEm: DateTime(2026),
+      ingredientes: [Ingrediente(dados.alimento(489), 50, '1 ovo')],
+      passos: const ['Doure 2 minutos de cada lado.'],
+    );
+    await tester.pumpWidget(MaterialApp(home: CozinharTela(receita)));
+    await tester.tap(find.text('Começar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Iniciar timer de 2 min'));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('01:59'), findsOneWidget);
+    await tester.pump(const Duration(minutes: 2));
+    await tester.pump();
+    expect(find.text('⏰ Tempo do passo 1 acabou!'), findsOneWidget);
+  });
 }
 
 const alturaTela = 740.0;

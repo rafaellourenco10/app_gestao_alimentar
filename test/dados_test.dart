@@ -101,4 +101,12 @@ void main() {
     expect(formatarNumero(2.4), '2,4');
     expect(formatarNumero(0.25), '¼');
   });
+
+  test('minutos citados no passo viram timer', () {
+    expect(minutosNoPasso('Cozinhe o frango por 15 minutos e desfie.'), 15);
+    expect(minutosNoPasso('Doure 2 minutos de cada lado.'), 2);
+    expect(minutosNoPasso('Mexa por 1 minuto.'), 1);
+    expect(minutosNoPasso('Asse por 40 min.'), 40);
+    expect(minutosNoPasso('Sirva quente.'), isNull);
+  });
 }

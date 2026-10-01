@@ -403,3 +403,12 @@ String formatarNumero(double v) {
   if (resto > 0.98) return '${inteiro + 1}';
   return v.toStringAsFixed(1).replaceAll('.', ',');
 }
+
+/// Minutos citados no passo ("Cozinhe por 15 minutos" → 15), para o timer do modo cozinhar.
+int? minutosNoPasso(String passo) {
+  final m = RegExp(
+    r'(\d+)\s*(?:minutos?|min)\b',
+    caseSensitive: false,
+  ).firstMatch(passo);
+  return m == null ? null : int.parse(m.group(1)!);
+}

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../dados.dart';
 import '../tema.dart';
 import '../widgets.dart';
+import 'cozinhar_tela.dart';
 
 class ReceitaTela extends StatefulWidget {
   const ReceitaTela(this.receita, {super.key});
@@ -44,6 +45,12 @@ class _ReceitaTelaState extends State<ReceitaTela> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         _titulo(context),
+                        const SizedBox(height: 16),
+                        BotaoPrincipal(
+                          texto: 'Começar a cozinhar',
+                          icone: Icons.soup_kitchen_outlined,
+                          onPressed: _cozinhar,
+                        ),
                         const SizedBox(height: 20),
                         _nutricao(context),
                         const SizedBox(height: 20),
@@ -70,6 +77,12 @@ class _ReceitaTelaState extends State<ReceitaTela> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _cozinhar() async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => CozinharTela(receita, fator: _fator)),
     );
   }
 
