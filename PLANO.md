@@ -134,13 +134,14 @@ Cada fase termina com algo funcionando que dá para testar.
 **Pronto quando:** o app padrão abre no celular.
 
 ### Fase 1: App completo com dados falsos (1–2 semanas)
-- [ ] Tema (cores, fonte, raios) a partir do `DESIGN.md`
-- [ ] Navegação com as 4 abas: Despensa, Cardápios, Favoritos e Perfil
-- [ ] JSON com ~150 alimentos comuns da TACO em `assets/`
-- [ ] `lib/dados.dart` com funções que usam dados em memória
-- [ ] As 8 telas: login, despensa, gerando, cardápio, detalhe, histórico, favoritos e perfil
-- [ ] `gerarCardapio()` falso: espera 2 s e devolve 3 receitas fixas, com kcal calculado pela TACO local
-- [ ] Telas de erro e de estado vazio
+- [x] Tema (cores, fonte, raios) a partir do `DESIGN.md`
+- [x] Navegação com as 4 abas: Despensa, Cardápios, Favoritos e Perfil
+- [x] TACO completa (597 alimentos) em `assets/taco.json`, convertida do CSV de [raulfdm/taco-api](https://github.com/raulfdm/taco-api) (MIT). Sem valor de energia na fonte: leite integral, leite desnatado UHT, iogurte de abacaxi e coco verde
+- [x] `lib/dados.dart` com funções que usam dados em memória
+- [x] As 8 telas: login, despensa, gerando, cardápio, detalhe, histórico, favoritos e perfil
+- [x] `gerarCardapio()` falso: espera 2 s e devolve 3 receitas fixas, com kcal calculado pela TACO local
+- [x] Telas de erro e de estado vazio
+- [x] Testes: cálculo de macros, busca, limite diário e o fluxo completo num celular pequeno (`flutter test`)
 
 **Pronto quando:** dá para fazer o fluxo inteiro no celular (adicionar alimentos, gerar, abrir a receita, favoritar) sem internet.
 
