@@ -13,7 +13,23 @@ const limiteDiario = 5;
 const basicos = {517, 272, 260};
 
 /// Sugestões rápidas da busca vazia, na ordem em que aparecem.
-const sugestoesRapidas = [489, 157, 107, 82, 4, 562, 409, 182, 92, 110, 53, 458, 461, 40, 327];
+const sugestoesRapidas = [
+  489,
+  157,
+  107,
+  82,
+  4,
+  562,
+  409,
+  182,
+  92,
+  110,
+  53,
+  458,
+  461,
+  40,
+  327,
+];
 
 class Alimento {
   const Alimento({
@@ -30,17 +46,17 @@ class Alimento {
   });
 
   factory Alimento.fromJson(Map<String, dynamic> j) => Alimento(
-        id: j['id'] as int,
-        nome: j['nome'] as String,
-        categoria: j['categoria'] as String,
-        kcal: (j['kcal'] as num).toDouble(),
-        proteina: (j['proteina'] as num).toDouble(),
-        carbo: (j['carbo'] as num).toDouble(),
-        gordura: (j['gordura'] as num).toDouble(),
-        fibra: (j['fibra'] as num).toDouble(),
-        curto: j['curto'] as String?,
-        emoji: j['emoji'] as String?,
-      );
+    id: j['id'] as int,
+    nome: j['nome'] as String,
+    categoria: j['categoria'] as String,
+    kcal: (j['kcal'] as num).toDouble(),
+    proteina: (j['proteina'] as num).toDouble(),
+    carbo: (j['carbo'] as num).toDouble(),
+    gordura: (j['gordura'] as num).toDouble(),
+    fibra: (j['fibra'] as num).toDouble(),
+    curto: j['curto'] as String?,
+    emoji: j['emoji'] as String?,
+  );
 
   final int id;
   final String nome;
@@ -107,7 +123,8 @@ class Receita {
   double get gordura => _porPorcao((a) => a.gordura);
 
   double _porPorcao(double Function(Alimento) valor) =>
-      ingredientes.fold(0.0, (t, i) => t + valor(i.alimento) * i.gramas / 100) / porcoes;
+      ingredientes.fold(0.0, (t, i) => t + valor(i.alimento) * i.gramas / 100) /
+      porcoes;
 }
 
 class DespensaVazia implements Exception {}
@@ -129,8 +146,11 @@ class Dados extends ChangeNotifier {
   Duration atrasoFalso = const Duration(seconds: 2);
 
   Future<void> carregarAlimentos() async {
-    final lista = jsonDecode(await rootBundle.loadString('assets/taco.json')) as List;
-    _alimentos = [for (final j in lista) Alimento.fromJson(j as Map<String, dynamic>)];
+    final lista =
+        jsonDecode(await rootBundle.loadString('assets/taco.json')) as List;
+    _alimentos = [
+      for (final j in lista) Alimento.fromJson(j as Map<String, dynamic>),
+    ];
     _porId = {for (final a in _alimentos) a.id: a};
   }
 
@@ -139,29 +159,34 @@ class Dados extends ChangeNotifier {
   /// Busca sem acento e sem diferenciar maiúsculas, no nome TACO e no nome curto.
   /// Ordem: começa com o termo › alimentos comuns › resto; depois o nome mais curto.
   List<Alimento> buscar(String termo) {
-    final palavras = normalizar(termo).split(' ').where((p) => p.isNotEmpty).toList();
+    final palavras = normalizar(
+      termo,
+    ).split(' ').where((p) => p.isNotEmpty).toList();
     if (palavras.isEmpty) return const [];
     int peso(Alimento a) {
       final curto = normalizar(a.curto ?? '');
       if (curto.startsWith(palavras.first)) return 0;
-      if (normalizar(a.nome).startsWith(palavras.first)) return a.curto != null ? 1 : 2;
-      return a.curto != null ? 3 : 4;
+      final comum = a.curto != null;
+      if (normalizar(a.nome).startsWith(palavras.first)) return comum ? 1 : 2;
+      return comum ? 3 : 4;
     }
 
-    final achados = _alimentos.where((a) {
-      final texto = normalizar('${a.nome} ${a.curto ?? ''}');
-      return palavras.every(texto.contains);
-    }).toList()
-      ..sort((a, b) {
-        final p = peso(a) - peso(b);
-        return p != 0 ? p : a.nomeCurto.length - b.nomeCurto.length;
-      });
+    final achados =
+        _alimentos.where((a) {
+          final texto = normalizar('${a.nome} ${a.curto ?? ''}');
+          return palavras.every(texto.contains);
+        }).toList()..sort((a, b) {
+          final p = peso(a) - peso(b);
+          return p != 0 ? p : a.nomeCurto.length - b.nomeCurto.length;
+        });
     return achados.take(20).toList();
   }
 
   /// Sugestões rápidas que ainda não estão na despensa.
-  List<Alimento> get sugestoes =>
-      [for (final id in sugestoesRapidas) if (!temNaDespensa(id)) alimento(id)].take(5).toList();
+  List<Alimento> get sugestoes => [
+    for (final id in sugestoesRapidas)
+      if (!temNaDespensa(id)) alimento(id),
+  ].take(5).toList();
 
   // ---------- Conta (Fase 2: Supabase Auth) ----------
 
@@ -177,7 +202,8 @@ class Dados extends ChangeNotifier {
 
   // ---------- Despensa ----------
 
-  bool temNaDespensa(int alimentoId) => despensa.any((i) => i.alimento.id == alimentoId);
+  bool temNaDespensa(int alimentoId) =>
+      despensa.any((i) => i.alimento.id == alimentoId);
 
   Future<void> adicionarItem(Alimento alimento, String? quantidade) async {
     final q = quantidade?.trim();
@@ -198,8 +224,13 @@ class Dados extends ChangeNotifier {
 
   /// Quantos ingredientes da receita (fora os básicos) o usuário tem: (tem, total).
   (int, int) cobertura(Receita r) {
-    final principais = r.ingredientes.where((i) => !basicos.contains(i.alimento.id));
-    return (principais.where((i) => temNaDespensa(i.alimento.id)).length, principais.length);
+    final principais = r.ingredientes.where(
+      (i) => !basicos.contains(i.alimento.id),
+    );
+    return (
+      principais.where((i) => temNaDespensa(i.alimento.id)).length,
+      principais.length,
+    );
   }
 
   int get geracoesRestantes {
@@ -233,7 +264,8 @@ class Dados extends ChangeNotifier {
 
   // ponytail: 3 receitas fixas até a Fase 3 trocar pelo Gemini.
   List<Receita> _receitasDeExemplo(DateTime momento) {
-    Ingrediente i(int id, double g, String medida) => Ingrediente(alimento(id), g, medida);
+    Ingrediente i(int id, double g, String medida) =>
+        Ingrediente(alimento(id), g, medida);
     final base = momento.microsecondsSinceEpoch;
     return [
       Receita(
@@ -310,12 +342,30 @@ class Dados extends ChangeNotifier {
 final dados = Dados();
 
 const _acentos = {
-  'á': 'a', 'à': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a',
-  'é': 'e', 'ê': 'e', 'è': 'e', 'ë': 'e',
-  'í': 'i', 'î': 'i', 'ì': 'i', 'ï': 'i',
-  'ó': 'o', 'ô': 'o', 'õ': 'o', 'ò': 'o', 'ö': 'o',
-  'ú': 'u', 'û': 'u', 'ù': 'u', 'ü': 'u',
-  'ç': 'c', 'ñ': 'n',
+  'á': 'a',
+  'à': 'a',
+  'â': 'a',
+  'ã': 'a',
+  'ä': 'a',
+  'é': 'e',
+  'ê': 'e',
+  'è': 'e',
+  'ë': 'e',
+  'í': 'i',
+  'î': 'i',
+  'ì': 'i',
+  'ï': 'i',
+  'ó': 'o',
+  'ô': 'o',
+  'õ': 'o',
+  'ò': 'o',
+  'ö': 'o',
+  'ú': 'u',
+  'û': 'u',
+  'ù': 'u',
+  'ü': 'u',
+  'ç': 'c',
+  'ñ': 'n',
 };
 
 String normalizar(String s) =>

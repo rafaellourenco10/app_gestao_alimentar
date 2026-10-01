@@ -15,6 +15,7 @@ class DespensaTela extends StatefulWidget {
 class _DespensaTelaState extends State<DespensaTela> {
   TextEditingController? _busca;
   FocusNode? _foco;
+  String? _filtro; // null = Todos
 
   Future<void> _pedirQuantidade(Alimento a, {String? atual}) async {
     final quantidade = await showDialog<String>(
@@ -31,13 +32,16 @@ class _DespensaTelaState extends State<DespensaTela> {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(
-        content: Text('${item.alimento.nome.split(',').first} removido'),
-        action: SnackBarAction(
-          label: 'Desfazer',
-          onPressed: () => dados.adicionarItem(item.alimento, item.quantidade),
+      ..showSnackBar(
+        SnackBar(
+          content: Text('${item.alimento.nomeCurto} removido'),
+          action: SnackBarAction(
+            label: 'Desfazer',
+            onPressed: () =>
+                dados.adicionarItem(item.alimento, item.quantidade),
+          ),
         ),
-      ));
+      );
   }
 
   @override
@@ -49,94 +53,393 @@ class _DespensaTelaState extends State<DespensaTela> {
         for (final item in dados.despensa) {
           (grupos[item.alimento.categoria] ??= []).add(item);
         }
+        final ordem = emojiCategoria.keys.toList();
         final categorias = grupos.keys.toList()
-          ..sort((a, b) => emojiCategoria.keys.toList().indexOf(a)
-              .compareTo(emojiCategoria.keys.toList().indexOf(b)));
+          ..sort((a, b) => ordem.indexOf(a).compareTo(ordem.indexOf(b)));
+        if (_filtro != null && !grupos.containsKey(_filtro)) _filtro = null;
+        final visiveis = _filtro == null ? categorias : [_filtro!];
+        final n = dados.despensa.length;
 
-        return Column(
+        return Stack(
           children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                children: [
-                  Cabecalho(
-                    sobrescrito: 'Visão geral',
-                    titulo: 'Minha despensa',
-                    direita: Selo(
-                        '${dados.despensa.length} ${dados.despensa.length == 1 ? 'alimento' : 'alimentos'}',
-                        icone: Icons.eco_outlined,
-                        fundo: Cores.verdeClaro,
-                        cor: Cores.verdeEscuro),
+            ListView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 150),
+              children: [
+                Cabecalho(
+                  sobrescrito: 'Visão geral',
+                  titulo: 'Minha despensa',
+                  direita: Pilula(
+                    '$n ${n == 1 ? 'alimento' : 'alimentos'}',
+                    icone: Icons.eco_outlined,
+                    fundo: Cores.verdeFixo,
+                    cor: Cores.noVerdeFixo,
+                    sombra: true,
                   ),
+                ),
+                const SizedBox(height: 12),
+                _resumo(n),
+                const SizedBox(height: 12),
+                _campoBusca(),
+                if (categorias.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  _campoBusca(),
-                  const SizedBox(height: 8),
-                  if (dados.despensa.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 24),
-                      child: Aviso(
-                        emoji: '🧺',
-                        titulo: 'Sua despensa está vazia',
-                        texto: 'Adicione o que você tem em casa pela busca acima. '
-                            'Depois é só gerar o cardápio!',
-                      ),
-                    ),
-                  for (final cat in categorias) ..._grupo(cat, grupos[cat]!),
+                  _filtros(categorias),
                 ],
-              ),
+                if (n == 0)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Aviso(
+                      icone: Icons.kitchen_outlined,
+                      titulo: 'Sua despensa está vazia',
+                      texto:
+                          'Busque acima o que você tem em casa — ovo, tomate, arroz… '
+                          'Depois é só gerar o cardápio!',
+                    ),
+                  ),
+                for (final cat in visiveis) _grupo(cat, grupos[cat]!),
+                if (n > 0) ...[
+                  const SizedBox(height: 24),
+                  const Dica(
+                    icone: Icons.soup_kitchen_outlined,
+                    texto:
+                        'Dica NutriCasa: toque em Gerar cardápio para combinar estes '
+                        'alimentos em receitas saborosas, sem desperdício!',
+                  ),
+                ],
+              ],
             ),
-            _rodape(),
+            Positioned(left: 0, right: 0, bottom: 0, child: _rodape()),
           ],
         );
       },
     );
   }
 
+  Widget _resumo(int n) {
+    final textos = Theme.of(context).textTheme;
+    final restantes = dados.geracoesRestantes;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Cores.superficieBaixa,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: Sombras.leve,
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  color: Cores.laranjaFixo,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.tips_and_updates_outlined,
+                  size: 22,
+                  color: Cores.noLaranjaFixo,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      n == 0 ? 'Vamos começar?' : 'Tudo pronto para cozinhar!',
+                      style: textos.labelMedium,
+                    ),
+                    Text(
+                      n == 0
+                          ? 'Adicione os alimentos que você tem em casa.'
+                          : restantes == 0
+                          ? 'Você já usou os $limiteDiario cardápios de hoje.'
+                          : 'Gere até $restantes ${restantes == 1 ? 'cardápio' : 'cardápios'} hoje com esses ingredientes.',
+                      style: textos.bodySmall?.copyWith(
+                        color: Cores.textoSuave,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _campoBusca() {
+    final textos = Theme.of(context).textTheme;
     return Autocomplete<Alimento>(
-      displayStringForOption: (a) => a.nome,
-      optionsBuilder: (v) => dados.buscar(v.text),
+      displayStringForOption: (a) => a.nomeCurto,
+      optionsBuilder: (v) =>
+          v.text.trim().isEmpty ? dados.sugestoes : dados.buscar(v.text),
       onSelected: (a) => _pedirQuantidade(a),
       fieldViewBuilder: (context, controller, foco, onSubmitted) {
         _busca = controller;
         _foco = foco;
-        return TextField(
-          controller: controller,
-          focusNode: foco,
-          textInputAction: TextInputAction.search,
-          onSubmitted: (_) => onSubmitted(),
-          decoration: const InputDecoration(
-            hintText: 'Adicionar alimento… (ex: ovo, tomate)',
-            prefixIcon: Icon(Icons.search),
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: Sombras.leve,
+          ),
+          child: TextField(
+            controller: controller,
+            focusNode: foco,
+            textInputAction: TextInputAction.search,
+            onSubmitted: (_) => onSubmitted(),
+            decoration: InputDecoration(
+              hintText: 'Adicionar alimento… (ex: ovo, tomate)',
+              prefixIcon: const Icon(Icons.search, size: 20),
+              fillColor: Cores.branco,
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(color: Cores.verde, width: 1.5),
+              ),
+            ),
           ),
         );
       },
-      optionsViewBuilder: (context, onSelected, opcoes) => Align(
-        alignment: Alignment.topLeft,
-        child: Material(
-          elevation: 6,
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 300,
-              maxWidth: MediaQuery.sizeOf(context).width - 40,
+      optionsViewBuilder: (context, onSelected, opcoes) {
+        final sugestao = (_busca?.text.trim() ?? '').isEmpty;
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Material(
+              elevation: 12,
+              shadowColor: const Color(0x33000000),
+              color: Cores.branco,
+              borderRadius: BorderRadius.circular(16),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 320,
+                  maxWidth: MediaQuery.sizeOf(context).width - 40,
+                ),
+                child: ListView(
+                  padding: const EdgeInsets.all(8),
+                  shrinkWrap: true,
+                  children: [
+                    if (sugestao)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'SUGESTÕES RÁPIDAS',
+                                style: textos.labelSmall?.copyWith(
+                                  color: Cores.textoSuave,
+                                ),
+                              ),
+                            ),
+                            const Icon(
+                              Icons.auto_awesome,
+                              size: 14,
+                              color: Cores.textoSuave,
+                            ),
+                          ],
+                        ),
+                      ),
+                    for (final a in opcoes) _opcao(a, () => onSelected(a)),
+                  ],
+                ),
+              ),
             ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              shrinkWrap: true,
-              children: [
-                for (final a in opcoes)
-                  ListTile(
-                    leading: Text(emojiCategoria[a.categoria] ?? '🍽️',
-                        style: const TextStyle(fontSize: 22)),
-                    title: Text(a.nome),
-                    subtitle: Text(a.categoria),
-                    trailing: dados.temNaDespensa(a.id)
-                        ? const Icon(Icons.check_circle, color: Cores.verde)
-                        : const Icon(Icons.add_circle_outline, color: Cores.verde),
-                    onTap: () => onSelected(a),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _opcao(Alimento a, VoidCallback onTap) {
+    final textos = Theme.of(context).textTheme;
+    final tem = dados.temNaDespensa(a.id);
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          children: [
+            Text(emojiDe(a), style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(a.nomeCurto, style: textos.labelLarge),
+                  Text(
+                    a.curto == null ? a.categoria : a.nome,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            tem
+                ? const Pilula(
+                    'Na despensa',
+                    icone: Icons.check,
+                    fundo: Cores.superficie,
+                    cor: Cores.textoSuave,
+                  )
+                : const Pilula(
+                    'Adicionar',
+                    icone: Icons.add,
+                    fundo: Cores.verdeFixo,
+                    cor: Cores.noVerdeFixo,
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filtros(List<String> categorias) {
+    Widget chip(String texto, String? valor, {int? contador}) => ChipFiltro(
+      texto,
+      ativo: _filtro == valor,
+      contador: contador,
+      onTap: () => setState(() => _filtro = valor),
+    );
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
+      child: Row(
+        children: [
+          chip('Todos', null, contador: dados.despensa.length),
+          for (final c in categorias) chip(c, c),
+        ],
+      ),
+    );
+  }
+
+  Widget _grupo(String categoria, List<ItemDespensa> itens) {
+    final textos = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(categoria, style: textos.titleMedium),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color:
+                              corCategoria[categoria] ?? Cores.superficieAlta,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '${itens.length} ${itens.length == 1 ? 'item' : 'itens'}',
+                  style: textos.labelSmall?.copyWith(color: Cores.textoSuave),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [for (final i in itens) _chip(i)],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _chip(ItemDespensa item) {
+    final textos = Theme.of(context).textTheme;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.sizeOf(context).width - 40,
+      ),
+      child: Material(
+        color: Cores.branco,
+        elevation: 0.6,
+        shadowColor: const Color(0x33000000),
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () =>
+              _pedirQuantidade(item.alimento, atual: item.quantidade ?? ''),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  emojiDe(item.alimento),
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: item.alimento.nomeCurto,
+                          style: textos.labelMedium,
+                        ),
+                        if (item.quantidade != null)
+                          TextSpan(
+                            text: ' (${item.quantidade})',
+                            style: textos.bodySmall?.copyWith(
+                              color: Cores.textoSuave,
+                            ),
+                          ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    tooltip: 'Remover ${item.alimento.nomeCurto}',
+                    style: IconButton.styleFrom(
+                      backgroundColor: Cores.superficie,
+                    ),
+                    icon: const Icon(
+                      Icons.close,
+                      size: 15,
+                      color: Cores.textoSuave,
+                    ),
+                    onPressed: () => _remover(item),
+                  ),
+                ),
               ],
             ),
           ),
@@ -145,70 +448,68 @@ class _DespensaTelaState extends State<DespensaTela> {
     );
   }
 
-  List<Widget> _grupo(String categoria, List<ItemDespensa> itens) {
-    final textos = Theme.of(context).textTheme;
-    return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
-        child: Row(children: [
-          Text('${emojiCategoria[categoria] ?? '🍽️'}  $categoria',
-              style: textos.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-          const Spacer(),
-          Text('${itens.length} ${itens.length == 1 ? 'item' : 'itens'}',
-              style: textos.labelMedium?.copyWith(color: Cores.textoSuave)),
-        ]),
-      ),
-      Card(
-        child: Column(children: [
-          for (final (n, item) in itens.indexed) ...[
-            if (n > 0) const Divider(height: 1, indent: 16, endIndent: 16),
-            ListTile(
-              title: Text(item.alimento.nome),
-              subtitle: Text(item.quantidade ?? 'Toque para informar a quantidade',
-                  style: TextStyle(
-                      color: item.quantidade == null ? Cores.textoSuave : Cores.verdeEscuro,
-                      fontWeight: item.quantidade == null ? null : FontWeight.w600)),
-              onTap: () => _pedirQuantidade(item.alimento, atual: item.quantidade ?? ''),
-              trailing: IconButton(
-                tooltip: 'Remover',
-                icon: const Icon(Icons.close),
-                onPressed: () => _remover(item),
-              ),
-            ),
-          ],
-        ]),
-      ),
-    ];
-  }
-
   Widget _rodape() {
+    final textos = Theme.of(context).textTheme;
     final restantes = dados.geracoesRestantes;
-    final pode = dados.despensa.isNotEmpty && restantes > 0;
+    final vazia = dados.despensa.isEmpty;
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
-      decoration: const BoxDecoration(
-        color: Cores.fundo,
-        border: Border(top: BorderSide(color: Color(0x0F000000))),
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Cores.fundo.withValues(alpha: 0),
+            Cores.fundo.withValues(alpha: 0.95),
+          ],
+          stops: const [0, 0.45],
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            restantes == 0
-                ? 'Você atingiu o limite de hoje. Volte amanhã!'
-                : '✨ $restantes ${restantes == 1 ? 'geração restante' : 'gerações restantes'} hoje',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: restantes == 0 ? Cores.erro : Cores.laranjaTexto,
-                fontWeight: FontWeight.w700),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: Cores.branco.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(99),
+              boxShadow: Sombras.leve,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  restantes == 0 ? Icons.schedule : Icons.auto_awesome,
+                  size: 16,
+                  color: restantes == 0 ? Cores.erro : Cores.laranja,
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    restantes == 0
+                        ? 'Limite de hoje atingido. Volte amanhã!'
+                        : '$restantes ${restantes == 1 ? 'geração restante' : 'gerações restantes'} hoje',
+                    overflow: TextOverflow.ellipsis,
+                    style: textos.labelMedium?.copyWith(
+                      color: restantes == 0 ? Cores.erro : Cores.laranjaTexto,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 8),
-          FilledButton.icon(
-            onPressed: pode
-                ? () => Navigator.of(context)
-                    .push(MaterialPageRoute<void>(builder: (_) => const GerandoTela()))
-                : null,
-            icon: const Icon(Icons.auto_awesome),
-            label: const Text('Gerar cardápio'),
+          BotaoPrincipal(
+            texto: 'Gerar cardápio',
+            icone: Icons.auto_fix_high,
+            onPressed: vazia || restantes == 0
+                ? null
+                : () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const GerandoTela(),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -228,6 +529,15 @@ class _QuantidadeDialog extends StatefulWidget {
 
 class _QuantidadeDialogState extends State<_QuantidadeDialog> {
   late final _ctrl = TextEditingController(text: widget.atual);
+  static const _atalhos = [
+    '1 un',
+    '2 un',
+    '6 un',
+    '1 dúzia',
+    '500 g',
+    '1 kg',
+    '1 pacote',
+  ];
 
   @override
   void dispose() {
@@ -237,22 +547,70 @@ class _QuantidadeDialogState extends State<_QuantidadeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final novo = widget.atual == null && !dados.temNaDespensa(widget.alimento.id);
+    final textos = Theme.of(context).textTheme;
+    final a = widget.alimento;
+    final novo = widget.atual == null && !dados.temNaDespensa(a.id);
     return AlertDialog(
-      title: Text(widget.alimento.nome),
-      content: TextField(
-        controller: _ctrl,
-        autofocus: true,
-        decoration: const InputDecoration(
-          labelText: 'Quantidade (opcional)',
-          hintText: 'ex: 3 un, 500 g, 1 pacote',
-        ),
-        onSubmitted: (v) => Navigator.pop(context, v),
+      title: Row(
+        children: [
+          Text(emojiDe(a), style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(a.nomeCurto, style: textos.titleMedium),
+                if (a.curto != null)
+                  Text(
+                    a.nome,
+                    style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _ctrl,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Quantidade (opcional)',
+              hintText: 'ex: 3 un, 500 g',
+              prefixIcon: Icon(Icons.scale_outlined, size: 20),
+            ),
+            onSubmitted: (v) => Navigator.pop(context, v),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final q in _atalhos)
+                ActionChip(
+                  label: Text(q),
+                  labelStyle: textos.labelMedium,
+                  backgroundColor: Cores.superficieBaixa,
+                  side: BorderSide.none,
+                  shape: const StadiumBorder(),
+                  onPressed: () => _ctrl.text = q,
+                ),
+            ],
+          ),
+        ],
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
         FilledButton(
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(0, 44),
+            shape: const StadiumBorder(),
+          ),
           onPressed: () => Navigator.pop(context, _ctrl.text),
           child: Text(novo ? 'Adicionar' : 'Salvar'),
         ),

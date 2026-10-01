@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   google_fonts: ^8.2.1
 
 dev_dependencies:
@@ -20,3 +22,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/taco.json
+    - assets/logo.png

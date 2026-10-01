@@ -54,23 +54,26 @@ void main() {
     expect(r.gordura, closeTo((8.9 + 10) / 2, 0.01));
   });
 
-  test('gerar cardápio: despensa vazia, limite diário e virada do dia', () async {
-    var hoje = DateTime(2026, 10, 1, 9);
-    d.agora = () => hoje;
+  test(
+    'gerar cardápio: despensa vazia, limite diário e virada do dia',
+    () async {
+      var hoje = DateTime(2026, 10, 1, 9);
+      d.agora = () => hoje;
 
-    expect(d.gerarCardapio, throwsA(isA<DespensaVazia>()));
+      expect(d.gerarCardapio, throwsA(isA<DespensaVazia>()));
 
-    await d.adicionarItem(d.alimento(489), '6 un');
-    for (var n = 0; n < limiteDiario; n++) {
-      expect((await d.gerarCardapio()).length, 3);
-    }
-    expect(d.geracoesRestantes, 0);
-    expect(d.gerarCardapio, throwsA(isA<LimiteAtingido>()));
-    expect(d.receitas.length, 3 * limiteDiario);
+      await d.adicionarItem(d.alimento(489), '6 un');
+      for (var n = 0; n < limiteDiario; n++) {
+        expect((await d.gerarCardapio()).length, 3);
+      }
+      expect(d.geracoesRestantes, 0);
+      expect(d.gerarCardapio, throwsA(isA<LimiteAtingido>()));
+      expect(d.receitas.length, 3 * limiteDiario);
 
-    hoje = DateTime(2026, 10, 2, 0, 1);
-    expect(d.geracoesRestantes, limiteDiario);
-  });
+      hoje = DateTime(2026, 10, 2, 0, 1);
+      expect(d.geracoesRestantes, limiteDiario);
+    },
+  );
 
   test('despensa não duplica alimento e quantidade vazia vira null', () async {
     await d.adicionarItem(d.alimento(489), '6 un');

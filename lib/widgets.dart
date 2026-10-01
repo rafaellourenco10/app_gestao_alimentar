@@ -22,29 +22,47 @@ const emojiCategoria = {
   'Nozes e sementes': '🥜',
 };
 
-const _tipos = {
-  'cafe_da_manha': ('☕', 'Café da manhã', Color(0xFFFFF3E0)),
-  'almoco_jantar': ('🍲', 'Almoço/Jantar', Color(0xFFE8F5E9)),
-  'lanche': ('🥞', 'Lanche', Color(0xFFFBE9E7)),
+/// Cor do pontinho ao lado do nome da categoria (como no Stitch).
+const corCategoria = {
+  'Frutas': Cores.laranja,
+  'Verduras e legumes': Cores.primaria,
+  'Carnes': Cores.terra,
+  'Peixes e frutos do mar': Cores.terra,
+  'Ovos': Cores.terra,
+  'Cereais e pães': Color(0xFFFFB77B),
+  'Leite e derivados': Cores.contorno,
 };
 
-(String, String, Color) tipoReceita(String tipo) =>
-    _tipos[tipo] ?? ('🍽️', 'Receita', const Color(0xFFF1F1EB));
+String emojiDe(Alimento a) => a.emoji ?? emojiCategoria[a.categoria] ?? '🍽️';
 
-/// Pílula pequena (kcal, tempo, dificuldade).
-class Selo extends StatelessWidget {
-  const Selo(
+const _tipos = {
+  'cafe_da_manha': ('Café da manhã', [Color(0xFFFFEBCF), Color(0xFFFFD49A)]),
+  'almoco_jantar': ('Almoço/Jantar', [Color(0xFFE2F4DC), Color(0xFFB8E3AC)]),
+  'lanche': ('Lanche', [Color(0xFFFFE6DC), Color(0xFFFFC6B0)]),
+};
+
+(String, List<Color>) tipoReceita(String tipo) =>
+    _tipos[tipo] ??
+    ('Receita', const [Cores.superficieBaixa, Cores.superficie]);
+
+/// Pílula pequena (kcal, tempo, contadores).
+class Pilula extends StatelessWidget {
+  const Pilula(
     this.texto, {
     super.key,
     this.icone,
-    this.fundo = Colors.white,
+    this.fundo = Cores.branco,
     this.cor = Cores.texto,
+    this.corIcone,
+    this.sombra = false,
   });
 
   final String texto;
   final IconData? icone;
   final Color fundo;
   final Color cor;
+  final Color? corIcone;
+  final bool sombra;
 
   @override
   Widget build(BuildContext context) {
@@ -53,19 +71,22 @@ class Selo extends StatelessWidget {
       decoration: BoxDecoration(
         color: fundo,
         borderRadius: BorderRadius.circular(99),
+        boxShadow: sombra ? Sombras.leve : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icone != null) ...[
-            Icon(icone, size: 14, color: cor),
+            Icon(icone, size: 14, color: corIcone ?? cor),
             const SizedBox(width: 4),
           ],
-          Text(
-            texto,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: cor,
-              fontWeight: FontWeight.w700,
+          Flexible(
+            child: Text(
+              texto,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: cor),
             ),
           ),
         ],
@@ -74,11 +95,374 @@ class Selo extends StatelessWidget {
   }
 }
 
-Selo seloKcal(double kcal) => Selo(
+Widget pilulaKcal(double kcal) => Pilula(
   '${kcal.round()} kcal',
-  fundo: Cores.laranjaClaro,
-  cor: Cores.laranjaTexto,
+  fundo: Cores.laranja,
+  cor: Cores.noLaranja,
+  sombra: true,
 );
+
+/// Superfície branca com cantos arredondados e sombra.
+class Cartao extends StatelessWidget {
+  const Cartao({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(20),
+    this.raio = 12,
+    this.sombra = Sombras.media,
+    this.cor = Cores.branco,
+  });
+
+  final Widget child;
+  final EdgeInsets padding;
+  final double raio;
+  final List<BoxShadow> sombra;
+  final Color cor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: cor,
+        borderRadius: BorderRadius.circular(raio),
+        boxShadow: sombra,
+      ),
+      child: child,
+    );
+  }
+}
+
+/// Botão laranja em pílula com brilho (CTA principal do Stitch).
+class BotaoPrincipal extends StatelessWidget {
+  const BotaoPrincipal({
+    super.key,
+    required this.texto,
+    this.icone,
+    this.onPressed,
+  });
+
+  final String texto;
+  final IconData? icone;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final ativo = onPressed != null;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(99),
+        boxShadow: ativo ? Sombras.laranja : null,
+      ),
+      child: FilledButton(
+        onPressed: onPressed,
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(56),
+          shape: const StadiumBorder(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icone != null) ...[
+              Icon(icone, size: 24),
+              const SizedBox(width: 8),
+            ],
+            Flexible(child: Text(texto, overflow: TextOverflow.ellipsis)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Topo das telas: logo, "NutriCasa" e o título; avatar à direita.
+class Topo extends StatelessWidget implements PreferredSizeWidget {
+  const Topo(this.titulo, {super.key, this.voltar = false});
+
+  final String titulo;
+  final bool voltar;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(64);
+
+  @override
+  Widget build(BuildContext context) {
+    final textos = Theme.of(context).textTheme;
+    return Container(
+      decoration: const BoxDecoration(
+        color: Cores.fundo,
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 8,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 64,
+          child: Padding(
+            padding: EdgeInsets.only(left: voltar ? 4 : 20, right: 12),
+            child: Row(
+              children: [
+                if (voltar) const BackButton(),
+                Image.asset('assets/logo.png', height: 32, width: 32),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'NutriCasa',
+                        style: textos.labelMedium?.copyWith(
+                          color: Cores.primaria,
+                          fontWeight: FontWeight.w700,
+                          height: 1,
+                        ),
+                      ),
+                      Text(
+                        titulo,
+                        overflow: TextOverflow.ellipsis,
+                        style: textos.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Avatar(email: dados.email ?? '', raio: 16),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Avatar extends StatelessWidget {
+  const Avatar({super.key, required this.email, required this.raio});
+
+  final String email;
+  final double raio;
+
+  @override
+  Widget build(BuildContext context) {
+    final letra = email.isEmpty ? '?' : email[0].toUpperCase();
+    return CircleAvatar(
+      radius: raio,
+      backgroundColor: Cores.verdeFixo,
+      child: Text(
+        letra,
+        style: TextStyle(
+          color: Cores.noVerdeFixo,
+          fontWeight: FontWeight.w800,
+          fontSize: raio * 0.9,
+        ),
+      ),
+    );
+  }
+}
+
+/// "VISÃO GERAL / Minha despensa" com elemento opcional à direita.
+class Cabecalho extends StatelessWidget {
+  const Cabecalho({
+    super.key,
+    required this.sobrescrito,
+    required this.titulo,
+    this.icone,
+    this.direita,
+    this.subtitulo,
+  });
+
+  final String sobrescrito;
+  final String titulo;
+  final IconData? icone;
+  final Widget? direita;
+  final String? subtitulo;
+
+  @override
+  Widget build(BuildContext context) {
+    final textos = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            if (icone != null) ...[
+              Container(
+                width: 24,
+                height: 24,
+                decoration: const BoxDecoration(
+                  color: Cores.verdeFixo,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icone, size: 16, color: Cores.noVerdeFixo),
+              ),
+              const SizedBox(width: 6),
+            ],
+            Expanded(
+              child: Text(
+                sobrescrito.toUpperCase(),
+                style: textos.labelMedium?.copyWith(
+                  color: Cores.primaria,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+            ?direita,
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(titulo, style: textos.headlineSmall),
+        if (subtitulo != null)
+          Text(
+            subtitulo!,
+            style: textos.bodyMedium?.copyWith(color: Cores.textoSuave),
+          ),
+      ],
+    );
+  }
+}
+
+/// Caixa de dica/informação (surface-container-low).
+class Dica extends StatelessWidget {
+  const Dica({
+    super.key,
+    required this.icone,
+    required this.texto,
+    this.titulo,
+    this.corIcone,
+  });
+
+  final IconData icone;
+  final String texto;
+  final String? titulo;
+  final Color? corIcone;
+
+  @override
+  Widget build(BuildContext context) {
+    final textos = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Cores.superficieBaixa,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icone, size: 20, color: corIcone ?? Cores.verde),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (titulo != null) Text(titulo!, style: textos.labelLarge),
+                Text(
+                  texto,
+                  style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Área de imagem da receita. Sem fotos por enquanto: degradê do tipo de refeição
+/// com os ingredientes principais em "pratinhos".
+class ImagemReceita extends StatelessWidget {
+  const ImagemReceita(
+    this.receita, {
+    super.key,
+    required this.altura,
+    this.tamanho = 1,
+  });
+
+  final Receita receita;
+  final double altura;
+  final double tamanho;
+
+  @override
+  Widget build(BuildContext context) {
+    final (_, cores) = tipoReceita(receita.tipo);
+    final emojis = receita.ingredientes
+        .where((i) => !basicos.contains(i.alimento.id))
+        .map((i) => emojiDe(i.alimento))
+        .toSet()
+        .take(3)
+        .toList();
+    return Container(
+      height: altura,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: cores,
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Folhinhas decorativas no fundo
+          Positioned(
+            right: -18,
+            bottom: -24,
+            child: Icon(
+              Icons.eco,
+              size: 120 * tamanho,
+              color: Colors.white.withValues(alpha: 0.35),
+            ),
+          ),
+          Positioned(
+            left: -14,
+            top: -10,
+            child: Icon(
+              Icons.spa,
+              size: 80 * tamanho,
+              color: Colors.white.withValues(alpha: 0.25),
+            ),
+          ),
+          Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final (n, e) in emojis.indexed)
+                    Transform.translate(
+                      offset: Offset(0, n == 1 ? -8 * tamanho : 6 * tamanho),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 6 * tamanho),
+                        width: (n == 1 ? 76 : 62) * tamanho,
+                        height: (n == 1 ? 76 : 62) * tamanho,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: Sombras.card,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          e,
+                          style: TextStyle(
+                            fontSize: (n == 1 ? 40 : 32) * tamanho,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ReceitaCard extends StatelessWidget {
   const ReceitaCard(this.receita, {super.key});
@@ -87,101 +471,144 @@ class ReceitaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (emoji, rotulo, corTipo) = tipoReceita(receita.tipo);
     final textos = Theme.of(context).textTheme;
-    final nomes = receita.ingredientes
+    final lista = receita.ingredientes
         .where((i) => !basicos.contains(i.alimento.id))
-        .map((i) => i.alimento.nome.split(',').first)
+        .map((i) => '${emojiDe(i.alimento)} ${i.alimento.nomeCurto}')
         .toSet()
         .join(' • ');
+    final (tem, total) = dados.cobertura(receita);
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Cores.branco,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: Sombras.card,
+      ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute<void>(builder: (_) => ReceitaTela(receita))),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 110,
-              color: corTipo,
-              padding: const EdgeInsets.all(12),
-              child: Stack(
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute<void>(builder: (_) => ReceitaTela(receita))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Stack(
                 children: [
-                  Center(
-                    child: Text(emoji, style: const TextStyle(fontSize: 52)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 52),
+                  ImagemReceita(receita, altura: 176),
+                  Positioned(
+                    left: 12,
+                    top: 12,
+                    right: 64,
                     child: Wrap(
                       spacing: 6,
                       runSpacing: 6,
                       children: [
-                        seloKcal(receita.kcal),
-                        Selo('${receita.tempoMin} min', icone: Icons.schedule),
-                        Selo(
+                        pilulaKcal(receita.kcal),
+                        Pilula(
+                          '${receita.tempoMin} min',
+                          icone: Icons.schedule,
+                          corIcone: Cores.primaria,
+                          sombra: true,
+                        ),
+                        Pilula(
                           receita.dificuldade,
                           icone: Icons.thumb_up_alt_outlined,
+                          corIcone: Cores.primaria,
+                          sombra: true,
                         ),
                       ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Selo(rotulo, fundo: Cores.verde, cor: Colors.white),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: BotaoFavorito(receita),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    receita.titulo,
-                    style: textos.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                  Positioned(right: 12, top: 12, child: BotaoFavorito(receita)),
+                  Positioned(
+                    left: 12,
+                    bottom: 10,
+                    right: 12,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Pilula(
+                        tem == total
+                            ? '100% dos ingredientes disponíveis'
+                            : 'Você tem $tem de $total ingredientes',
+                        icone: Icons.check_circle,
+                        fundo: Cores.verdeFixo,
+                        cor: Cores.noVerdeFixo,
+                        sombra: true,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    nomes,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textos.bodySmall?.copyWith(color: Cores.textoSuave),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          'Ver receita completa',
-                          overflow: TextOverflow.ellipsis,
-                          style: textos.labelLarge?.copyWith(
-                            color: Cores.verdeEscuro,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.arrow_forward,
-                        size: 18,
-                        color: Cores.verdeEscuro,
-                      ),
-                    ],
-                  ),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      receita.titulo,
+                      style: textos.titleMedium?.copyWith(height: 1.3),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Cores.superficieBaixa,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.inventory_2_outlined,
+                            size: 18,
+                            color: Cores.primaria,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              lista,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: textos.bodySmall?.copyWith(
+                                color: Cores.textoSuave,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Ver receita completa',
+                            overflow: TextOverflow.ellipsis,
+                            style: textos.labelLarge?.copyWith(
+                              color: Cores.primaria,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.arrow_forward,
+                          size: 18,
+                          color: Cores.primaria,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -197,13 +624,23 @@ class BotaoFavorito extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: dados,
-      builder: (context, _) => IconButton.filled(
-        style: IconButton.styleFrom(backgroundColor: Colors.white),
-        tooltip: receita.favorita ? 'Remover dos favoritos' : 'Favoritar',
-        onPressed: () => dados.alternarFavorita(receita),
-        icon: Icon(
-          receita.favorita ? Icons.favorite : Icons.favorite_border,
-          color: Cores.erro,
+      builder: (context, _) => Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.92),
+          shape: BoxShape.circle,
+          boxShadow: Sombras.leve,
+        ),
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          tooltip: receita.favorita ? 'Remover dos favoritos' : 'Favoritar',
+          onPressed: () => dados.alternarFavorita(receita),
+          icon: Icon(
+            receita.favorita ? Icons.favorite : Icons.favorite_border,
+            size: 20,
+            color: receita.favorita ? Cores.erro : Cores.textoSuave,
+          ),
         ),
       ),
     );
@@ -214,14 +651,14 @@ class BotaoFavorito extends StatelessWidget {
 class Aviso extends StatelessWidget {
   const Aviso({
     super.key,
-    required this.emoji,
+    required this.icone,
     required this.titulo,
     required this.texto,
     this.acao,
     this.onAcao,
   });
 
-  final String emoji;
+  final IconData icone;
   final String titulo;
   final String texto;
   final String? acao;
@@ -236,13 +673,17 @@ class Aviso extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 56)),
-            const SizedBox(height: 16),
-            Text(
-              titulo,
-              textAlign: TextAlign.center,
-              style: textos.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            Container(
+              width: 88,
+              height: 88,
+              decoration: const BoxDecoration(
+                color: Cores.superficieBaixa,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icone, size: 40, color: Cores.verde),
             ),
+            const SizedBox(height: 20),
+            Text(titulo, textAlign: TextAlign.center, style: textos.titleLarge),
             const SizedBox(height: 8),
             Text(
               texto,
@@ -251,7 +692,7 @@ class Aviso extends StatelessWidget {
             ),
             if (acao != null) ...[
               const SizedBox(height: 24),
-              FilledButton(onPressed: onAcao, child: Text(acao!)),
+              BotaoPrincipal(texto: acao!, onPressed: onAcao),
             ],
           ],
         ),
@@ -260,49 +701,69 @@ class Aviso extends StatelessWidget {
   }
 }
 
-/// Título de tela no estilo do Stitch ("VISÃO GERAL / Minha despensa").
-class Cabecalho extends StatelessWidget {
-  const Cabecalho({
+/// Chip de filtro em pílula (verde quando ativo), com contador opcional.
+class ChipFiltro extends StatelessWidget {
+  const ChipFiltro(
+    this.texto, {
     super.key,
-    required this.sobrescrito,
-    required this.titulo,
-    this.direita,
+    required this.ativo,
+    required this.onTap,
+    this.contador,
+    this.fundo = Cores.branco,
   });
 
-  final String sobrescrito;
-  final String titulo;
-  final Widget? direita;
+  final String texto;
+  final bool ativo;
+  final VoidCallback onTap;
+  final int? contador;
+  final Color fundo;
 
   @override
   Widget build(BuildContext context) {
     final textos = Theme.of(context).textTheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                sobrescrito.toUpperCase(),
-                style: textos.labelMedium?.copyWith(
-                  color: Cores.verde,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                titulo,
-                style: textos.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+    final cor = ativo ? Colors.white : Cores.textoSuave;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Material(
+        color: ativo ? Cores.verde : fundo,
+        shape: const StadiumBorder(),
+        elevation: ativo ? 1 : 0.5,
+        shadowColor: const Color(0x22000000),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(texto, style: textos.labelMedium?.copyWith(color: cor)),
+                if (contador != null) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (ativo ? Colors.white : Cores.verde).withValues(
+                        alpha: 0.2,
+                      ),
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    child: Text(
+                      '$contador',
+                      style: textos.labelSmall?.copyWith(
+                        color: ativo ? Colors.white : Cores.verde,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
-        ?direita,
-      ],
+      ),
     );
   }
 }
