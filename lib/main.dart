@@ -82,101 +82,54 @@ class Inicio extends StatefulWidget {
 }
 
 class _InicioState extends State<Inicio> {
-  int _aba = 0;
+  @override
+  void initState() {
+    super.initState();
+    abaAtual.value = 0;
+  }
 
   static const _titulos = ['Despensa', 'Cardápios', 'Favoritos', 'Perfil'];
 
   @override
   Widget build(BuildContext context) {
-    final textos = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: Topo(
-        _titulos[_aba],
-        acoes: [
-          ListenableBuilder(
-            listenable: dados,
-            builder: (context, _) {
-              final n = dados.compras.where((c) => !c.comprado).length;
-              return IconButton(
-                tooltip: 'Lista de compras',
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const ComprasTela()),
-                ),
-                icon: Badge(
-                  isLabelVisible: n > 0,
-                  label: Text('$n'),
-                  backgroundColor: Cores.laranja,
-                  child: const Icon(Icons.shopping_cart_outlined),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: IndexedStack(
-        index: _aba,
-        children: const [
-          DespensaTela(),
-          HistoricoTela(),
-          FavoritosTela(),
-          PerfilTela(),
-        ],
-      ),
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Cores.branco,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: Sombras.nav,
-        ),
-        child: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            height: 64,
-            backgroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            indicatorColor: Cores.verdeNav,
-            labelTextStyle: WidgetStateProperty.resolveWith(
-              (s) => textos.labelSmall?.copyWith(
-                color: s.contains(WidgetState.selected)
-                    ? Cores.verde
-                    : Cores.textoSuave,
-              ),
+    return ValueListenableBuilder(
+      valueListenable: abaAtual,
+      builder: (context, aba, _) => Scaffold(
+        appBar: Topo(
+          _titulos[aba],
+          acoes: [
+            ListenableBuilder(
+              listenable: dados,
+              builder: (context, _) {
+                final n = dados.compras.where((c) => !c.comprado).length;
+                return IconButton(
+                  tooltip: 'Lista de compras',
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ComprasTela(),
+                    ),
+                  ),
+                  icon: Badge(
+                    isLabelVisible: n > 0,
+                    label: Text('$n'),
+                    backgroundColor: Cores.laranja,
+                    child: const Icon(Icons.shopping_cart_outlined),
+                  ),
+                );
+              },
             ),
-            iconTheme: WidgetStateProperty.resolveWith(
-              (s) => IconThemeData(
-                size: 24,
-                color: s.contains(WidgetState.selected)
-                    ? Cores.verde
-                    : Cores.textoSuave,
-              ),
-            ),
-          ),
-          child: NavigationBar(
-            selectedIndex: _aba,
-            onDestinationSelected: (i) => setState(() => _aba = i),
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.kitchen_outlined),
-                selectedIcon: Icon(Icons.kitchen),
-                label: 'Despensa',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.menu_book_outlined),
-                selectedIcon: Icon(Icons.menu_book),
-                label: 'Cardápios',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.favorite_border),
-                selectedIcon: Icon(Icons.favorite),
-                label: 'Favoritos',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.account_circle_outlined),
-                selectedIcon: Icon(Icons.account_circle),
-                label: 'Perfil',
-              ),
-            ],
-          ),
+          ],
         ),
+        body: IndexedStack(
+          index: aba,
+          children: const [
+            DespensaTela(),
+            HistoricoTela(),
+            FavoritosTela(),
+            PerfilTela(),
+          ],
+        ),
+        bottomNavigationBar: const BarraAbas(),
       ),
     );
   }

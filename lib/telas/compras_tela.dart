@@ -29,6 +29,7 @@ class ComprasTela extends StatelessWidget {
     final textos = Theme.of(context).textTheme;
     return Scaffold(
       appBar: const Topo('Lista de compras', voltar: true),
+      bottomNavigationBar: const BarraAbas(),
       body: ListenableBuilder(
         listenable: dados,
         builder: (context, _) {

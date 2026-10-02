@@ -780,3 +780,76 @@ class ChipFiltro extends StatelessWidget {
 
 String formatarData(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+
+/// Aba aberta no início (0 = Despensa … 3 = Perfil).
+/// Telas empilhadas com a barra (ex.: lista de compras) trocam a aba por aqui.
+final abaAtual = ValueNotifier(0);
+
+/// Barra de abas de baixo. Fora do início, tocar numa aba volta para ele.
+class BarraAbas extends StatelessWidget {
+  const BarraAbas({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textos = Theme.of(context).textTheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Cores.branco,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: Sombras.nav,
+      ),
+      child: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          height: 64,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          indicatorColor: Cores.verdeNav,
+          labelTextStyle: WidgetStateProperty.resolveWith(
+            (s) => textos.labelSmall?.copyWith(
+              color: s.contains(WidgetState.selected)
+                  ? Cores.verde
+                  : Cores.textoSuave,
+            ),
+          ),
+          iconTheme: WidgetStateProperty.resolveWith(
+            (s) => IconThemeData(
+              size: 24,
+              color: s.contains(WidgetState.selected)
+                  ? Cores.verde
+                  : Cores.textoSuave,
+            ),
+          ),
+        ),
+        child: NavigationBar(
+          selectedIndex: abaAtual.value,
+          onDestinationSelected: (i) {
+            abaAtual.value = i;
+            Navigator.of(context).popUntil((r) => r.isFirst);
+          },
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.kitchen_outlined),
+              selectedIcon: Icon(Icons.kitchen),
+              label: 'Despensa',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.menu_book_outlined),
+              selectedIcon: Icon(Icons.menu_book),
+              label: 'Cardápios',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite_border),
+              selectedIcon: Icon(Icons.favorite),
+              label: 'Favoritos',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.account_circle_outlined),
+              selectedIcon: Icon(Icons.account_circle),
+              label: 'Perfil',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

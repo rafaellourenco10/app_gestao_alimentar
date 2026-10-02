@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutricasa/dados.dart';
 import 'package:nutricasa/main.dart';
+import 'package:nutricasa/widgets.dart';
 
 /// Simula o botão "voltar" do Android.
 Future<void> voltarDoSistema(WidgetTester tester) async {
@@ -70,6 +71,14 @@ void main() {
       // Segundo voltar (sem sugestões) volta para a despensa.
       await voltarDoSistema(tester);
       expect(find.text('Minha despensa'), findsOneWidget);
+
+      // A lista de compras mantém a barra de abas: tocar numa aba sai dela.
+      await tester.tap(find.byTooltip('Lista de compras'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Favoritos'));
+      await tester.pumpAndSettle();
+      expect(find.text('PARA COMPRAR'), findsNothing);
+      expect(abaAtual.value, 2);
     },
   );
 
