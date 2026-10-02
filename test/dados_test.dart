@@ -287,4 +287,45 @@ void main() {
     await d.carregarPreferencias();
     expect(d.metaKcal, isNull);
   });
+
+  test(
+    'alimento fora da TACO: cadastro salvo, parecidos e aviso de kcal',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      await d.carregarPreferencias();
+      expect(d.buscar('kombucha'), isEmpty);
+      final k = await d.criarAlimento(' Kombucha ', null);
+      expect((k.id < 0, k.categoria, k.semDados), (true, 'Outros', true));
+      expect(d.buscar('kombucha').single, k);
+      expect(await d.criarAlimento('kombucha', 30), k); // sem duplicar
+      final t = await d.criarAlimento('Seitan', 76);
+      expect(t.semDados, false);
+
+      final outro = Dados();
+      await outro.carregarAlimentos();
+      await outro.carregarPreferencias();
+      expect(outro.buscar('seitan').single.kcal, 76);
+      expect(outro.buscar('kombucha').single.semDados, true);
+
+      // "Você quis dizer…?": menos palavras e letra trocada.
+      expect(d.parecidos('requeijao cremoso caseiro'), isNotEmpty);
+      expect(d.parecidos('tomatte').first.nomeCurto, startsWith('Tomate'));
+      expect(d.parecidos('xyzw'), isEmpty);
+      expect(distancia('tomate', 'tomatte'), 1);
+
+      final r = Receita(
+        id: 'x',
+        titulo: 'Teste',
+        tipo: 'lanche',
+        tempoMin: 5,
+        porcoes: 1,
+        dificuldade: 'Fácil',
+        ingredientes: [Ingrediente(k, 200, '1 copo'), Ingrediente(t, 100, '')],
+        passos: const [],
+        criadaEm: DateTime(2026),
+      );
+      expect(r.semKcal, [k]);
+      expect(r.kcal, 76);
+    },
+  );
 }

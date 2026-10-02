@@ -168,12 +168,19 @@ Cada fase termina com algo funcionando que dá para testar.
 - [x] Notificação de validade (aviso no celular mesmo com o app fechado)
 - [x] Plano da semana + lista de compras do que falta
 
+### Fase 1.7: Alimento fora da TACO (escolhido em 02/10/2026)
+- [x] "Adicionar 'xyz' como alimento novo" quando a busca não acha nada (salvo no celular, categoria "Outros")
+- [x] Kcal por 100 g opcional no cadastro (do rótulo)
+- [x] Receita avisa quando tem ingrediente sem dados de kcal
+- [x] "Você quis dizer…?" com os itens da TACO mais parecidos antes de cadastrar
+
 ### Fase 2: Supabase (3–5 dias)
 - [ ] Criar o projeto no Supabase e pegar a URL e a anon key
 - [ ] Importar a TACO completa em `alimentos` (os valores "Tr" e "NA" viram 0 ou null)
 - [ ] Criar `despensa` e `receitas` com RLS
 - [ ] Login real (Supabase Auth)
 - [ ] Trocar o corpo das funções de `dados.dart` por chamadas ao Supabase (a geração continua falsa)
+- [ ] Tabela `alimentos_usuario` (alimentos criados pelo usuário, só ele vê, com RLS)
 
 **Pronto quando:** você loga em dois celulares e vê a mesma despensa.
 
@@ -182,6 +189,7 @@ Cada fase termina com algo funcionando que dá para testar.
 - [ ] Instalar o Supabase CLI e criar a Edge Function `gerar-cardapio` (o fluxo acima)
 - [ ] `supabase secrets set GEMINI_API_KEY=...`
 - [ ] Trocar a `gerarCardapio()` falsa pela chamada à função
+- [ ] Edge Function `estimar-alimento`: o Gemini estima kcal e macros por 100 g dos alimentos fora da TACO sem dados (exceção à regra "só TACO": vale só para esses itens e aparece como "estimado pela IA")
 - [ ] Testar com 10 despensas diferentes (incluindo uma com só 2 itens)
 
 **Pronto quando:** o botão "Gerar cardápio" devolve receitas reais com as kcal da TACO.

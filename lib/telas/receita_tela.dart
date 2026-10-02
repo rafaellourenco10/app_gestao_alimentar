@@ -440,6 +440,16 @@ class _ReceitaTelaState extends State<ReceitaTela> {
               ? '$insight Valores por porção.'
               : '$insight Valores por porção — rendendo $_porcoes porções.',
         ),
+        if (receita.semKcal.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Dica(
+            icone: Icons.info_outline,
+            corIcone: Cores.laranjaTexto,
+            texto:
+                'Sem dados de: ${receita.semKcal.map((a) => a.nomeCurto).join(', ')}. '
+                'O total pode ser maior.',
+          ),
+        ],
       ],
     );
   }

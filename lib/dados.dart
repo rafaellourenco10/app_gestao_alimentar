@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +45,7 @@ class Alimento {
     required this.fibra,
     this.curto,
     this.emoji,
+    this.semDados = false,
   });
 
   factory Alimento.fromJson(Map<String, dynamic> j) => Alimento(
@@ -69,6 +71,9 @@ class Alimento {
   /// Nome amigável e emoji dos ~200 alimentos mais comuns (null nos demais).
   final String? curto;
   final String? emoji;
+
+  /// Alimento criado pelo usuário sem kcal conhecida (Fase 3: a IA estima).
+  final bool semDados;
 
   String get nomeCurto => curto ?? nome;
 }
@@ -129,6 +134,12 @@ class Receita {
   double get carbo => _porPorcao((a) => a.carbo);
   double get gordura => _porPorcao((a) => a.gordura);
 
+  /// Ingredientes sem dados de kcal (o total pode estar abaixo do real).
+  List<Alimento> get semKcal => [
+    for (final i in ingredientes)
+      if (i.alimento.semDados) i.alimento,
+  ];
+
   double _porPorcao(double Function(Alimento) valor) =>
       ingredientes.fold(0.0, (t, i) => t + valor(i.alimento) * i.gramas / 100) /
       porcoes;
@@ -157,6 +168,7 @@ class LimiteAtingido implements Exception {}
 
 class Dados extends ChangeNotifier {
   List<Alimento> _alimentos = const [];
+  final List<Alimento> _proprios = [];
   Map<int, Alimento> _porId = const {};
   final List<ItemDespensa> despensa = [];
 
@@ -224,6 +236,66 @@ class Dados extends ChangeNotifier {
     return achados.take(20).toList();
   }
 
+  /// Itens parecidos com um termo que não achou nada ("Você quis dizer…?"):
+  /// tenta com menos palavras e depois aceita letras trocadas na primeira.
+  List<Alimento> parecidos(String termo) {
+    final palavras = normalizar(
+      termo,
+    ).split(' ').where((p) => p.isNotEmpty).toList();
+    for (var n = palavras.length - 1; n > 0; n--) {
+      final r = buscar(palavras.take(n).join(' '));
+      if (r.isNotEmpty) return r.take(3).toList();
+    }
+    if (palavras.isEmpty || palavras.first.length < 4) return const [];
+    final p = palavras.first;
+    final limite = p.length < 6 ? 1 : 2;
+    bool perto(Alimento a) => normalizar(
+      '${a.curto ?? ''} ${a.nome}',
+    ).split(RegExp('[ ,]+')).any((w) => distancia(w, p) <= limite);
+    // ponytail: varre os ~600 itens só quando a busca não acha nada.
+    final r = _alimentos.where(perto).toList()
+      ..sort((a, b) => (a.curto == null ? 1 : 0) - (b.curto == null ? 1 : 0));
+    return r.take(3).toList();
+  }
+
+  /// Cria um alimento fora da TACO (categoria "Outros"), salvo no celular.
+  /// Sem [kcal], fica marcado como sem dados. Fase 2: tabela `alimentos_usuario`.
+  Future<Alimento> criarAlimento(String nome, double? kcal) async {
+    final n = nome.trim();
+    final igual = _proprios
+        .where((a) => normalizar(a.nome) == normalizar(n))
+        .firstOrNull;
+    if (igual != null) return igual;
+    final a = _proprio(n, kcal);
+    await _prefs?.setString(
+      'alimentosProprios',
+      jsonEncode([
+        for (final p in _proprios)
+          {'nome': p.nome, 'kcal': p.semDados ? null : p.kcal},
+      ]),
+    );
+    notifyListeners();
+    return a;
+  }
+
+  Alimento _proprio(String nome, double? kcal) {
+    final a = Alimento(
+      id: -(_proprios.length + 1),
+      nome: nome,
+      categoria: 'Outros',
+      kcal: kcal ?? 0,
+      proteina: 0,
+      carbo: 0,
+      gordura: 0,
+      fibra: 0,
+      semDados: kcal == null,
+    );
+    _proprios.add(a);
+    _alimentos = [..._alimentos, a];
+    _porId = {..._porId, a.id: a};
+    return a;
+  }
+
   /// Sugestões rápidas que ainda não estão na despensa.
   List<Alimento> get sugestoes => [
     for (final id in sugestoesRapidas)
@@ -241,6 +313,12 @@ class Dados extends ChangeNotifier {
     restricoes = {...?_prefs!.getStringList('restricoes')};
     alergias = _prefs!.getString('alergias') ?? '';
     metaKcal = _prefs!.getInt('metaKcal');
+    final proprios = _prefs!.getString('alimentosProprios');
+    if (_proprios.isEmpty && proprios != null) {
+      for (final j in jsonDecode(proprios) as List) {
+        _proprio(j['nome'] as String, (j['kcal'] as num?)?.toDouble());
+      }
+    }
   }
 
   Future<void> salvarPreferenciasAlimentares(
@@ -608,6 +686,20 @@ const _acentos = {
 
 String normalizar(String s) =>
     s.toLowerCase().split('').map((c) => _acentos[c] ?? c).join();
+
+/// Quantas letras é preciso trocar, pôr ou tirar para ir de [a] a [b] (Levenshtein).
+int distancia(String a, String b) {
+  var antes = List.generate(b.length + 1, (j) => j);
+  for (var i = 1; i <= a.length; i++) {
+    final atual = [i];
+    for (var j = 1; j <= b.length; j++) {
+      final troca = antes[j - 1] + (a[i - 1] == b[j - 1] ? 0 : 1);
+      atual.add([antes[j] + 1, atual[j - 1] + 1, troca].reduce(min));
+    }
+    antes = atual;
+  }
+  return antes[b.length];
+}
 
 const _fracoes = {'½': 0.5, '¼': 0.25, '¾': 0.75, '⅓': 1 / 3, '⅔': 2 / 3};
 

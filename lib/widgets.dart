@@ -20,6 +20,7 @@ const emojiCategoria = {
   'Pratos prontos': '🍱',
   'Feijões e leguminosas': '🫘',
   'Nozes e sementes': '🥜',
+  'Outros': '🍽️',
 };
 
 /// Cor do pontinho ao lado do nome da categoria (como no Stitch).
