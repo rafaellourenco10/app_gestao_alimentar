@@ -48,10 +48,14 @@ O NutriCasa ajuda quem quer cozinhar em casa sem desperdiçar comida. Você cont
 O design segue os protótipos do Stitch em [`stitch_strategic_plan_execution/`](stitch_strategic_plan_execution/), com fundo off-white quente `#FAFAF7`, verde `#2E7D32` como cor primária, laranja `#FB8C00` nas ações principais e a fonte Plus Jakarta Sans.
 
 <div align="center">
-<img src="stitch_strategic_plan_execution/minha_despensa/screen.png" width="200" alt="Despensa" />
-<img src="stitch_strategic_plan_execution/card_pio_gerado/screen.png" width="200" alt="Cardápio gerado" />
-<img src="stitch_strategic_plan_execution/detalhe_da_receita/screen.png" width="200" alt="Detalhe da receita" />
-<br/><sub>Protótipos de design (Stitch). O app final usa o fundo <code>#FAFAF7</code>.</sub>
+<table>
+<tr>
+<td align="center" valign="top"><img src="stitch_strategic_plan_execution/minha_despensa/screen.png" height="520" alt="Despensa" /><br/><sub>Despensa</sub></td>
+<td align="center" valign="top"><img src="stitch_strategic_plan_execution/card_pio_gerado/screen.png" height="520" alt="Cardápio gerado" /><br/><sub>Cardápio</sub></td>
+<td align="center" valign="top"><img src="stitch_strategic_plan_execution/detalhe_da_receita/screen.png" height="520" alt="Detalhe da receita" /><br/><sub>Receita</sub></td>
+</tr>
+</table>
+<sub>Protótipos de design (Stitch). O app final usa o fundo <code>#FAFAF7</code>.</sub>
 </div>
 
 ## Como funciona
